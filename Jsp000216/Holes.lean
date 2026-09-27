@@ -21,6 +21,7 @@ noncomputable def stableHoles : Set ℤ :=
 
 lemma stableHoles_empty_iff :
     stableHoles A = ∅ ↔ intervalHoles A ⊆ lowerSumHoles A ∪ upperSumHoles A := by
-  simp [stableHoles]
+  change intervalHoles A \ (lowerSumHoles A ∪ upperSumHoles A) = ∅ ↔ _
+  exact Set.sdiff_eq_empty
 
 end Jsp000216
