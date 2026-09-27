@@ -21,3 +21,4 @@ import Jsp000216.HardBranch
 import Jsp000216.NormalizedThreeK
 import Jsp000216.AffineNormalize
 import Jsp000216.CanonicalNormalize
+import Jsp000216.FiniteThreeK
