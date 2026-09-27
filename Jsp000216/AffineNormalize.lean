@@ -37,7 +37,9 @@ lemma differenceContentF_ne_zero {A : Finset ℤ} {a : ℤ}
     simp only [Finset.mem_singleton]
     exact sub_eq_zero.mp (Int.natAbs_eq_zero.mp (hall z hz))
   have hc := Finset.card_le_card hsub
-  simpa using hc at hcard
+  have hcle : A.card ≤ 1 := by
+    simpa using hc
+  omega
 
 lemma differenceContentF_pos {A : Finset ℤ} {a : ℤ}
     (ha : a ∈ A) (hcard : 2 ≤ A.card) :
@@ -56,7 +58,7 @@ lemma add_content_mul_normalizationCoordF {A : Finset ℤ} {a x : ℤ}
   omega
 
 lemma normalizationCoordF_injOn {A : Finset ℤ} {a : ℤ}
-    (ha : a ∈ A) (hcard : 2 ≤ A.card) :
+    (_ha : a ∈ A) (_hcard : 2 ≤ A.card) :
     Set.InjOn (normalizationCoordF A a) A := by
   intro x hx y hy hxy
   have hxrec := add_content_mul_normalizationCoordF (A := A) (a := a) hx
@@ -84,7 +86,7 @@ lemma normalizeAtF_nonneg {A : Finset ℤ} {a : ℤ}
 
 /-- Integer-valued finset gcd agrees with the cast of the gcd of natAbs. -/
 lemma finset_int_gcd_eq_natAbs_gcd (S : Finset ℤ) :
-    S.gcd id = (S.gcd Int.natAbs : ℤ) := by
+    S.gcd id = ((S.gcd (fun z : ℤ => z.natAbs) : ℕ) : ℤ) := by
   induction S using Finset.cons_induction_on with
   | empty => simp
   | cons a S ha ih =>
@@ -133,7 +135,7 @@ lemma gcd_normalizeAtF_eq_one {A : Finset ℤ} {a : ℤ}
     (ha : a ∈ A) (hcard : 2 ≤ A.card) :
     (normalizeAtF A a).gcd id = 1 := by
   have hcontent := differenceContentF_normalizeAtF_eq_one ha hcard
-  have hnat : (normalizeAtF A a).gcd Int.natAbs = 1 := by
+  have hnat : (normalizeAtF A a).gcd (fun z : ℤ => z.natAbs) = 1 := by
     simpa only [differenceContentF, sub_zero] using hcontent
   rw [finset_int_gcd_eq_natAbs_gcd, hnat]
   norm_num
