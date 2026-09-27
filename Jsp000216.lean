@@ -11,3 +11,4 @@ import Jsp000216.ModInjective
 import Jsp000216.ModCard
 import Jsp000216.ModMap
 import Jsp000216.TrivialStab
+import Jsp000216.ResidueLift
