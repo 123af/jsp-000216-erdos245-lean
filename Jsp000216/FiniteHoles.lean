@@ -22,7 +22,7 @@ def stableHolesF (A : Finset ℤ) (n : ℤ) : Finset ℤ :=
 
 @[simp] lemma mem_intervalHolesF {A : Finset ℤ} {n x : ℤ} :
     x ∈ intervalHolesF A n ↔ 0 ≤ x ∧ x ≤ n ∧ x ∉ A := by
-  simp [intervalHolesF]
+  simp [intervalHolesF, and_assoc]
 
 @[simp] lemma mem_lowerSumHolesF {A : Finset ℤ} {n x : ℤ} :
     x ∈ lowerSumHolesF A n ↔ x ∈ intervalHolesF A n ∧ x ∈ A + A := by
@@ -51,6 +51,7 @@ lemma card_intervalHolesF_le_card_lower_add_upper_of_stable_empty
   calc
     (intervalHolesF A n).card ≤
         (lowerSumHolesF A n ∪ upperSumHolesF A n).card := Finset.card_le_card hsub
-    _ ≤ (lowerSumHolesF A n).card + (upperSumHolesF A n).card := Finset.card_union_le
+    _ ≤ (lowerSumHolesF A n).card + (upperSumHolesF A n).card :=
+      Finset.card_union_le (lowerSumHolesF A n) (upperSumHolesF A n)
 
 end Jsp000216
