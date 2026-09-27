@@ -19,3 +19,4 @@ import Jsp000216.RefinedLift
 import Jsp000216.ModFiber
 import Jsp000216.HardBranch
 import Jsp000216.NormalizedThreeK
+import Jsp000216.AffineNormalize
