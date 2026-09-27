@@ -10,7 +10,13 @@ def translateF (n : ℤ) (S : Finset ℤ) : Finset ℤ :=
 
 @[simp] lemma mem_translateF {n y : ℤ} {S : Finset ℤ} :
     y ∈ translateF n S ↔ ∃ x ∈ S, n + x = y := by
-  simp [translateF]
+  change y ∈ S.image (fun x => n + x) ↔ _
+  constructor
+  · intro hy
+    rcases Finset.mem_image.mp hy with ⟨x, hx, hxy⟩
+    exact ⟨x, hx, hxy⟩
+  · rintro ⟨x, hx, hxy⟩
+    exact Finset.mem_image.mpr ⟨x, hx, hxy⟩
 
 lemma card_translateF (n : ℤ) (S : Finset ℤ) :
     (translateF n S).card = S.card := by
