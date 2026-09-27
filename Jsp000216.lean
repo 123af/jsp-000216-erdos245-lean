@@ -9,4 +9,5 @@ import Jsp000216.KneserBridge
 import Jsp000216.ModShadow
 import Jsp000216.ModInjective
 import Jsp000216.ModCard
+import Jsp000216.ModMap
 import Jsp000216.TrivialStab
