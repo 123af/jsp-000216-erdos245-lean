@@ -78,7 +78,7 @@ lemma stableHole_not_mem_modSelfSumF
     exact hxnotup hz
 
 lemma modSelfSumF_ne_univ_of_stableHolesF_nonempty
-    {p : ℕ} {A : Finset ℤ}
+    {p : ℕ} [NeZero p] {A : Finset ℤ}
     (hp : 0 < p) (hAint : A ⊆ Finset.Icc 0 (p : ℤ))
     (h0 : 0 ∈ A) (htop : (p : ℤ) ∈ A)
     (hstable : (stableHolesF A (p : ℤ)).Nonempty) :
@@ -91,12 +91,11 @@ lemma modSelfSumF_ne_univ_of_stableHolesF_nonempty
   simp
 
 lemma modStabF_ne_univ_of_stableHolesF_nonempty
-    {p : ℕ} {A : Finset ℤ}
+    {p : ℕ} [NeZero p] {A : Finset ℤ}
     (hp : 0 < p) (hAint : A ⊆ Finset.Icc 0 (p : ℤ))
     (h0 : 0 ∈ A) (htop : (p : ℤ) ∈ A)
     (hstable : (stableHolesF A (p : ℤ)).Nonempty) :
     modStabF p A ≠ Finset.univ := by
-  letI : NeZero p := ⟨Nat.ne_zero_of_lt hp⟩
   have hCne := modSelfSumF_ne_univ_of_stableHolesF_nonempty hp hAint h0 htop hstable
   intro hHuniv
   have hSatuniv : modSatF p A = Finset.univ := by
@@ -117,7 +116,7 @@ lemma modStabF_ne_univ_of_stableHolesF_nonempty
 
 /-- The exact modular structure forced by the remaining stable-hole branch. -/
 lemma stable_hard_branch_modular_structure
-    {p : ℕ} {A : Finset ℤ}
+    {p : ℕ} [NeZero p] {A : Finset ℤ}
     (hp : 0 < p) (hAint : A ⊆ Finset.Icc 0 (p : ℤ))
     (h0 : 0 ∈ A) (htop : (p : ℤ) ∈ A)
     (hgcd : A.gcd id = 1)
@@ -126,7 +125,6 @@ lemma stable_hard_branch_modular_structure
     modStabF p A ≠ {0} ∧
       modStabF p A ≠ Finset.univ ∧
       ¬ modImageF p A ⊆ modStabF p A := by
-  letI : NeZero p := ⟨Nat.ne_zero_of_lt hp⟩
   have hnontriv := normalized_small_doubling_mod_stabilizer_nontrivial
     hp hAint h0 htop hsmall
   have hproper := modStabF_ne_univ_of_stableHolesF_nonempty
