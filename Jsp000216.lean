@@ -15,3 +15,4 @@ import Jsp000216.ResidueLift
 import Jsp000216.ModGcd
 import Jsp000216.ModSat
 import Jsp000216.StableMod
+import Jsp000216.RefinedLift
