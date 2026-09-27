@@ -1,58 +1,47 @@
 # Research notes
 
-## R1 — finite Freiman 3k−4 reduction
+## R1 — finite Freiman 3k−4 theorem — COMPLETE
 
-Current proof strategy is an independent Lean port of the mathematics, using the 2026 Isabelle AFP formalization `Freiman_3k_4` as a checked blueprint. The prior JSP-000216 WIP is used only as prior-work context and is not copied.
+R1 is now kernel-checked end to end on the project branch.  The implementation is an independent Lean port of the mathematics, with the 2026 Isabelle AFP formalization and public additive-combinatorics formalizations used only as checked blueprints/API references.
 
-Normalize a finite integer set `A` affinely so that `min A = 0`, `max A = n`, and `gcd A = 1`. Let `k = |A|`.
+For a normalized finite integer set `A ⊆ [0,p]` with `0,p ∈ A` and `gcd A = 1`, define interval holes and split them into lower, upper, and stable holes.  The easy branch shows that if the stable-hole set is empty then
 
-Define interval holes `H0 = [0,n] \ A`. Split holes into:
+`|[0,p]| ≤ |A+A| - |A| + 1`.
 
-- lower holes `L`: `x ∈ A+A`;
-- upper holes `U`: `n+x ∈ A+A`;
-- stable holes `S = H0 \ (L ∪ U)`.
+For the hard branch reduce modulo `p`, let `B = A mod p`, `C = B+B`, and `H = stabilizer(C)`.  The formal proof now contains the modular shadow/cardinality lemmas, trivial-stabilizer exclusion, gcd-one subgroup exclusion, saturation/coset bounds, refined integer lift, residue-fiber estimates, and the final contradiction
 
-The easy branch is:
+`stable hole  =>  |A+A| ≥ 3|A|-3`.
 
-`S = ∅  =>  A` is already covered by a unit-step progression of length at most `|A+A|-|A|+1`.
+Hence under
 
-The key counting identity is
+`|A+A| ≤ 3|A|-4`
 
-`|A+A| = 2|A|-1 + |L| + |U|`.
+the stable-hole set is empty, giving the sharp normalized diameter bound
 
-Thus the remaining finite theorem reduces to proving that small doubling together with `gcd A = 1` forbids stable holes.
+`p + 1 ≤ |A+A| - |A| + 1`.
 
-For the hard branch set
+Affine normalization was then formalized directly for `Finset ℤ`: translation by the least element and division by the gcd of all offsets preserves `|A|` and `|A+A|`, produces gcd one, and provides the normalized endpoints.  The resulting general finite theorem is:
 
-- `B = A mod n`, so `|B| = |A|-1`;
-- `C = B+B` in `Z/nZ`;
-- `H = stabilizer(C)`;
-- `D = B+H`.
+`freiman_three_k_minus_fourF`:
+for every finite integer set `A` with `3 ≤ |A|` and `|A+A| ≤ 3|A|-4`, there exist a start and positive common difference such that `A` is contained in an arithmetic progression with exactly
 
-The checked formal blueprint splits into:
+`|A+A| - |A| + 1`
 
-1. `B ⊆ H`: a nontrivial proper period forces a divisor `d>1` of every element of `A`, contradicting `gcd A = 1`.
-2. `B ⊄ H`: prove the stabilizer-count inequality
+displayed terms.
 
-   `|H| ≤ 1 + |L∩U| + 2(|D|-|B|)`,
+The theorem and all supporting modules are imported by `Jsp000216.lean`; CI #89 is green.
 
-   combine with Kneser
+## R2 — zero-density transfer for Erdős #245 — ACTIVE
 
-   `2|D| - |H| ≤ |C|`,
+The remaining problem is the infinite transfer from a zero-density set `S ⊆ ℕ` to a finite prefix to which R1 applies.
 
-   and the exact identity
+Planned decomposition:
 
-   `|A+A| = |C| + |A| + |L∩U|`
+1. finite windows `window S N`, counts `countIn S N`, and increasing enumeration `enumerate S`;
+2. exact enumeration/count identities and `window S N + window S N ⊆ window (S+S) (2N)`;
+3. elementary density consequences, including arbitrarily large dyadic scales with `countIn S (2N) ≤ 4 countIn S N`;
+4. prove a doubling-gap lemma: under an eventual sumset ratio `< 3`, arbitrarily far out there is an index `i` with `2*enumerate S i < enumerate S (i+1)`;
+5. at such a gap, identify the finite prefix sumset exactly with the global sumset window, derive `|X+X| ≤ 3|X|-4`, invoke R1, and contradict zero density;
+6. package the contradiction into the `limsup ≥ 3` statement of JSP-000216 / Erdős #245.
 
-   to obtain `|A+A| ≥ 3|A|-3`, contradicting `|A+A| ≤ 3|A|-4`.
-
-### Immediate implementation order
-
-1. hole definitions and `stableHoles = ∅` reduction;
-2. finite cardinality identities;
-3. affine/GCD normalization;
-4. modulo-`n` shadow and exact counting identity;
-5. Kneser port/use;
-6. stabilizer-count inequality;
-7. finite `3k−4` theorem;
-8. return to the zero-density transfer needed for JSP-000216.
+The main new structural obstacle is step 4.  A checked public blueprint obtains it from a bounded-doubling proper generalized-arithmetic-progression cover plus a finite-dimensional no-doubling-gap chain estimate.  We will first formalize the elementary window/density layers independently, then isolate the smallest GAP-cover package actually needed for this one implication.
