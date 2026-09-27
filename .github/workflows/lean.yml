@@ -22,7 +22,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .lake/packages
-          key: lake-packages-b63f6e8a68d220e3b3bc4f3792bb53650d375f24
+          key: lake-packages-v435rc3-misc-cd12c538
       - name: Resolve dependencies
         run: lake update
       - name: Get Mathlib cache
