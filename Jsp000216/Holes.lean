@@ -1,6 +1,4 @@
-import Mathlib.Data.Set.Card
-import Mathlib.Data.Set.Intervals.Basic
-import Mathlib.Tactic
+import Mathlib
 
 open Set
 open scoped Pointwise
@@ -23,19 +21,6 @@ noncomputable def stableHoles : Set ℤ :=
 
 lemma stableHoles_empty_iff :
     stableHoles A = ∅ ↔ intervalHoles A ⊆ lowerSumHoles A ∪ upperSumHoles A := by
-  constructor
-  · intro h x hx
-    by_contra hxlu
-    have : x ∈ stableHoles A := by
-      exact ⟨hx, hxlu⟩
-    simpa [h] using this
-  · intro h
-    ext x
-    constructor
-    · intro hx
-      rcases hx with ⟨hxH, hxnot⟩
-      exact (hxnot (h hxH)).elim
-    · intro hx
-      simpa using hx
+  simp [stableHoles]
 
 end Jsp000216
