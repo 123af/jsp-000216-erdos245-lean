@@ -1,5 +1,6 @@
 import Jsp000216.ModMap
 import Jsp000216.FiniteTranslate
+import Jsp000216.TrivialStab
 
 open scoped Pointwise
 
@@ -102,5 +103,32 @@ lemma card_modSelfSum_add_card_le_sumset {p : ℕ} {A : Finset ℤ}
   rw [← card_residueRepsF p A, ← card_translateF (p : ℤ) A,
     ← Finset.card_union_of_disjoint hdisj]
   exact Finset.card_le_card (Finset.union_subset hR hE)
+
+/-- In the normalized small-doubling setup, the modular self-sum stabilizer
+cannot be the trivial subgroup `{0}`. -/
+lemma normalized_small_doubling_mod_stabilizer_nontrivial
+    {p : ℕ} {A : Finset ℤ}
+    (hp : 0 < p) (hAint : A ⊆ Finset.Icc 0 (p : ℤ))
+    (h0 : 0 ∈ A) (htop : (p : ℤ) ∈ A)
+    (hsmall : (A + A).card ≤ 3 * A.card - 4) :
+    modStabF p A ≠ {0} := by
+  intro htriv
+  have hstab : (modStabF p A).card = 1 := by
+    rw [htriv]
+    simp
+  have hlow := modSelfSum_card_ge_two_card_sub_three_of_stab_card_one
+    hp hAint h0 htop hstab
+  have hlift := card_modSelfSum_add_card_le_sumset hp h0 htop
+  have hcard : 2 ≤ A.card := by
+    have hne : (0 : ℤ) ≠ (p : ℤ) := by omega
+    have hpair : ({0, (p : ℤ)} : Finset ℤ) ⊆ A := by
+      intro x hx
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+      rcases hx with rfl | rfl
+      · exact h0
+      · exact htop
+    have hc := Finset.card_le_card hpair
+    simpa [hne] using hc
+  omega
 
 end Jsp000216
