@@ -3,6 +3,7 @@ import Mathlib.Data.Set.Intervals.Basic
 import Mathlib.Tactic
 
 open Set
+open scoped Pointwise
 
 namespace Jsp000216
 
