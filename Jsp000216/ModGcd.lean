@@ -23,7 +23,7 @@ lemma zmod_subgroup_eq_top_of_gcd_one {p : ℕ} {A : Finset ℤ}
     rw [hgcd] at hg
     have hcast := congrArg (fun z : ℤ => (z : ZMod p)) hg
     norm_num at hcast
-    rw [hcast]
+    rw [← hcast] at hsum
     exact hsum
   apply (AddSubgroup.eq_top_iff' K).mpr
   intro x
