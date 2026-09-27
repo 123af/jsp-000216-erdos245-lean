@@ -5,3 +5,4 @@ import Jsp000216.FinitePieces
 import Jsp000216.FiniteRanges
 import Jsp000216.FiniteCount
 import Jsp000216.NoStable
+import Jsp000216.KneserBridge
