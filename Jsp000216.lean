@@ -23,3 +23,5 @@ import Jsp000216.AffineNormalize
 import Jsp000216.CanonicalNormalize
 import Jsp000216.FiniteThreeK
 import Jsp000216.SetCount
+import Jsp000216.DensityScale
+import Jsp000216.GapWindow
