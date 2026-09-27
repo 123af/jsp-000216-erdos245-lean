@@ -34,18 +34,8 @@ lemma ContainedInAPF.card_le
     intro x hx y hy hxy
     have hxrep := (hcoord x hx).2
     have hyrep := (hcoord y hy).2
-    have hstepZ : (step : ℤ) ≠ 0 := by exact_mod_cast hA.1.ne'
-    have heq : start + (coord x : ℤ) * (step : ℤ) =
-        start + (coord y : ℤ) * (step : ℤ) := by
-      calc
-        start + (coord x : ℤ) * (step : ℤ) = x := hxrep.symm
-        _ = y := hxy
-        _ = start + (coord y : ℤ) * (step : ℤ) := hyrep
-    have hmul : (coord x : ℤ) * (step : ℤ) =
-        (coord y : ℤ) * (step : ℤ) := add_left_cancel heq
-    have hc : (coord x : ℤ) = (coord y : ℤ) :=
-      mul_right_cancel₀ hstepZ hmul
-    exact_mod_cast hc
+    rw [hxy] at hxrep
+    exact hxrep.trans hyrep.symm
   have hmaps : Set.MapsTo coord A (Finset.range length) := by
     intro x hx
     exact Finset.mem_range.mpr (hcoord x hx).1
