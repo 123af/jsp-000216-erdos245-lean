@@ -21,10 +21,10 @@ lemma zmod_subgroup_eq_top_of_gcd_one {p : ℕ} {A : Finset ℤ}
       (K.sum_mem fun a ha => hterms a ha)
   have hone : (1 : ZMod p) ∈ K := by
     rw [hgcd] at hg
-    have hcast := congrArg (fun z : ℤ => (z : ZMod p)) hg
-    norm_num at hcast
-    rw [← hcast] at hsum
-    exact hsum
+    have hg' : (1 : ℤ) = ∑ a ∈ A, a * g a := by
+      simpa using hg
+    rw [← hg'] at hsum
+    simpa using hsum
   apply (AddSubgroup.eq_top_iff' K).mpr
   intro x
   obtain ⟨z, hz⟩ := ZMod.intCast_surjective x
