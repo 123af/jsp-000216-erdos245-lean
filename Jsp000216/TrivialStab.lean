@@ -26,7 +26,14 @@ lemma modSelfSum_card_ge_two_card_sub_three_of_stab_card_one
   rw [card_modImageF_normalized hp hAint h0 htop] at h
   have hcard : 2 ≤ A.card := by
     have hne : (0 : ℤ) ≠ (p : ℤ) := by omega
-    exact Finset.two_le_card.mpr ⟨0, h0, (p : ℤ), htop, hne⟩
+    have hpair : ({0, (p : ℤ)} : Finset ℤ) ⊆ A := by
+      intro x hx
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+      rcases hx with rfl | rfl
+      · exact h0
+      · exact htop
+    have hc := Finset.card_le_card hpair
+    simpa [hne] using hc
   omega
 
 end Jsp000216
