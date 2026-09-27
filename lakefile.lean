@@ -6,7 +6,11 @@ package jsp000216Erdos245 where
 
 require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git" @
-    "b63f6e8a68d220e3b3bc4f3792bb53650d375f24"
+    "v4.35.0-rc3"
+
+require MiscYD from git
+  "https://github.com/YaelDillies/misc-yd.git" @
+    "cd12c538d66f15a358a6904e7c847cd67661096f"
 
 @[default_target]
 lean_lib Jsp000216
