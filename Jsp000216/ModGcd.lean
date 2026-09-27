@@ -11,7 +11,7 @@ lemma zmod_subgroup_eq_top_of_gcd_one {p : ℕ} {A : Finset ℤ}
     (hA : ∀ a ∈ A, (a : ZMod p) ∈ K) : K = ⊤ := by
   classical
   obtain ⟨g, hg⟩ := Finset.gcd_eq_sum_mul A id
-  have hterms : ∀ a ∈ A, ((a * g a : ℤ) : ZMod p) ∈ K := by
+  have hterms : ∀ a ∈ A, (a : ZMod p) * (g a : ZMod p) ∈ K := by
     intro a ha
     have haK := hA a ha
     have hz := K.zsmul_mem haK (g a)
@@ -34,11 +34,12 @@ lemma zmod_subgroup_eq_top_of_gcd_one {p : ℕ} {A : Finset ℤ}
 /-- If all residues of `A` lie in the stabilizer of its reduced self-sum and
 `gcd(A)=1`, that stabilizer is all of `ZMod p`. -/
 lemma modStabF_eq_univ_of_gcd_one_of_image_subset
-    {p : ℕ} {A : Finset ℤ} (hAne : A.Nonempty)
+    {p : ℕ} {A : Finset ℤ} (hp : 0 < p) (hAne : A.Nonempty)
     (hgcd : A.gcd id = 1)
     (hsub : modImageF p A ⊆ modStabF p A) :
     modStabF p A = Finset.univ := by
   classical
+  let _ : NeZero p := ⟨Nat.ne_of_gt hp⟩
   let K : AddSubgroup (ZMod p) :=
     AddAction.stabilizer (ZMod p) ((modSelfSumF p A : Finset (ZMod p)) : Set (ZMod p))
   have hHK : (↑(modStabF p A) : Set (ZMod p)) = (K : Set (ZMod p)) := by
@@ -63,10 +64,10 @@ lemma modStabF_eq_univ_of_gcd_one_of_image_subset
   exact hxKs
 
 lemma not_modImageF_subset_modStabF_of_gcd_one_of_stab_ne_univ
-    {p : ℕ} {A : Finset ℤ} (hAne : A.Nonempty)
+    {p : ℕ} {A : Finset ℤ} (hp : 0 < p) (hAne : A.Nonempty)
     (hgcd : A.gcd id = 1) (hproper : modStabF p A ≠ Finset.univ) :
     ¬ modImageF p A ⊆ modStabF p A := by
   intro hsub
-  exact hproper (modStabF_eq_univ_of_gcd_one_of_image_subset hAne hgcd hsub)
+  exact hproper (modStabF_eq_univ_of_gcd_one_of_image_subset hp hAne hgcd hsub)
 
 end Jsp000216
