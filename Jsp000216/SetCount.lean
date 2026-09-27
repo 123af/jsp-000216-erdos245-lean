@@ -8,19 +8,22 @@ namespace Jsp000216
 noncomputable section
 
 /-- Elements of `S` in the positive finite window `[1,N]`. -/
-def windowF (S : Set ℕ) (N : ℕ) : Finset ℕ :=
-  (Finset.Icc 1 N).filter fun n => n ∈ S
+noncomputable def windowF (S : Set ℕ) (N : ℕ) : Finset ℕ := by
+  classical
+  exact (Finset.Icc 1 N).filter fun n => n ∈ S
 
 /-- Counting function for positive elements of `S` up to `N`. -/
-def countInF (S : Set ℕ) (N : ℕ) : ℕ :=
+noncomputable def countInF (S : Set ℕ) (N : ℕ) : ℕ :=
   (windowF S N).card
 
 @[simp] lemma mem_windowF {S : Set ℕ} {N x : ℕ} :
     x ∈ windowF S N ↔ 1 ≤ x ∧ x ≤ N ∧ x ∈ S := by
+  classical
   simp [windowF, and_assoc]
 
 lemma countInF_eq_ncard (S : Set ℕ) (N : ℕ) :
     countInF S N = (S ∩ Set.Icc 1 N).ncard := by
+  classical
   rw [countInF, windowF, ← Set.ncard_coe_finset]
   congr 1
   ext n
@@ -28,6 +31,7 @@ lemma countInF_eq_ncard (S : Set ℕ) (N : ℕ) :
 
 lemma countInF_mono_set {S T : Set ℕ} (hST : S ⊆ T) (N : ℕ) :
     countInF S N ≤ countInF T N := by
+  classical
   unfold countInF windowF
   apply Finset.card_le_card
   intro n hn
@@ -36,6 +40,7 @@ lemma countInF_mono_set {S T : Set ℕ} (hST : S ⊆ T) (N : ℕ) :
 
 lemma countInF_mono_nat (S : Set ℕ) : Monotone (countInF S) := by
   intro M N hMN
+  classical
   unfold countInF windowF
   apply Finset.card_le_card
   intro n hn
@@ -61,6 +66,7 @@ lemma range_enumerateF {S : Set ℕ} (hS : S.Infinite) :
 lemma countInF_enumerate_ge {S : Set ℕ} (hS : S.Infinite)
     (hpos : S ⊆ Set.Ici 1) (k : ℕ) :
     k + 1 ≤ countInF S (enumerateF S k) := by
+  classical
   let F : Fin (k + 1) → ℕ := fun i => enumerateF S i
   have hF_inj : Function.Injective F := by
     intro i j hij
@@ -79,7 +85,7 @@ lemma countInF_enumerate_ge {S : Set ℕ} (hS : S.Infinite)
       simp
     _ ≤ (S ∩ Set.Icc 1 (enumerateF S k)).ncard := by
       apply Set.ncard_le_ncard
-        ((Set.finite_Icc 1 (enumerateF S k)).subset Set.inter_subset_right)
+        (ht := (Set.finite_Icc 1 (enumerateF S k)).subset Set.inter_subset_right)
       rintro x ⟨i, rfl⟩
       exact hF_mem i
 
@@ -101,6 +107,7 @@ lemma eventually_countInF_pos {S : Set ℕ} (hS : S.Infinite)
 lemma countInF_enumerate_eq {S : Set ℕ} (hS : S.Infinite)
     (hpos : S ⊆ Set.Ici 1) (i : ℕ) :
     countInF S (enumerateF S i) = i + 1 := by
+  classical
   let F : Finset ℕ :=
     (Finset.univ : Finset (Fin (i + 1))).image
       (fun j : Fin (i + 1) => enumerateF S j.1)
