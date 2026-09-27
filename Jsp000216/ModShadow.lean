@@ -6,7 +6,7 @@ namespace Jsp000216
 
 /-- Reduction of a finite integer set modulo `p`. -/
 def modImageF (p : ℕ) (A : Finset ℤ) : Finset (ZMod p) :=
-  A.image fun x => (x : ZMod p)
+  A.image (fun x : ℤ => (x : ZMod p))
 
 /-- The reduced self-sum. -/
 def modSelfSumF (p : ℕ) (A : Finset ℤ) : Finset (ZMod p) :=
