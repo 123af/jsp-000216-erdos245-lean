@@ -50,7 +50,8 @@ lemma normalized_stable_branch_sumset_lower_bound
       intro z hz
       rcases Finset.mem_vadd_finset.mp hz with ⟨h, hh, hhz⟩
       exact Finset.mem_add.mpr ⟨c, hcC, h, hh, hhz⟩
-    dsimp [C, H] at hs ⊢
+    change D ⊆ modSelfSumF p A + (modSelfSumF p A).addStab at hs
+    change D ⊆ modSelfSumF p A
     simpa only [Finset.add_addStab] using hs
   have hDdisjSat : Disjoint D Sat := by
     exact disjoint_vadd_add_of_closed_not_memF hHadd hHneg hcSat
@@ -143,6 +144,24 @@ lemma normalized_small_doubling_interval_bound
     hAint h0 htop hstable
   have hAsum : A.card ≤ (A + A).card :=
     Finset.card_le_card (subset_self_sumset_of_zero h0)
-  omega
+  have hcard : 2 ≤ A.card := by
+    have hnep : (0 : ℤ) ≠ (p : ℤ) := by omega
+    have hpair : ({0, (p : ℤ)} : Finset ℤ) ⊆ A := by
+      intro x hx
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+      rcases hx with rfl | rfl
+      · exact h0
+      · exact htop
+    have hc := Finset.card_le_card hpair
+    simpa [hnep] using hc
+  have hsub : (A + A).card - A.card ≤ (3 * A.card - 4) - A.card :=
+    Nat.sub_le_sub_right hsmall A.card
+  have harith : (3 * A.card - 4) - A.card + 1 = 2 * A.card - 3 := by
+    omega
+  calc
+    (Finset.Icc 0 (p : ℤ)).card
+        ≤ (A + A).card - A.card + 1 := hIcc
+    _ ≤ (3 * A.card - 4) - A.card + 1 := Nat.add_le_add_right hsub 1
+    _ = 2 * A.card - 3 := harith
 
 end Jsp000216
