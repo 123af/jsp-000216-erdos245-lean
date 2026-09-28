@@ -213,6 +213,50 @@ lemma norm_reducedTailLiftF_le_two_mul_projected {n : ℕ}
   dsimp [t] at hupp ⊢
   nlinarith
 
+/-- Write an arbitrary integral basis of the column lattice as an ambient
+real matrix, with the basis vectors as columns. -/
+noncomputable def latticeBasisMatrixF {n : ℕ}
+    (D : Matrix (Fin n) (Fin n) ℝ) (hD : D.det ≠ 0)
+    (b : Basis (Fin n) ℤ
+      (Submodule.span ℤ (Set.range (matrixBasisF D hD)))) :
+    Matrix (Fin n) (Fin n) ℝ :=
+  (Matrix.of (fun j i => (b j : Fin n → ℝ) i)).transpose
+
+@[simp] lemma latticeBasisMatrixF_apply {n : ℕ}
+    (D : Matrix (Fin n) (Fin n) ℝ) (hD : D.det ≠ 0)
+    (b : Basis (Fin n) ℤ
+      (Submodule.span ℤ (Set.range (matrixBasisF D hD))))
+    (i j : Fin n) :
+    latticeBasisMatrixF D hD b i j = (b j : Fin n → ℝ) i := by
+  rfl
+
+/-- Changing from the original columns to any integral basis of the same full
+lattice preserves the absolute determinant. -/
+lemma abs_det_latticeBasisMatrixF {n : ℕ}
+    (D : Matrix (Fin n) (Fin n) ℝ) (hD : D.det ≠ 0)
+    (b : Basis (Fin n) ℤ
+      (Submodule.span ℤ (Set.range (matrixBasisF D hD)))) :
+    |(latticeBasisMatrixF D hD b).det| = |D.det| := by
+  classical
+  let L := Submodule.span ℤ (Set.range (matrixBasisF D hD))
+  let b0 : Basis (Fin n) ℤ L := (matrixBasisF D hD).restrictScalars ℤ
+  have hb := ZLattice.covolume_eq_det L b
+  have hb0 := ZLattice.covolume_eq_det L b0
+  change ZLattice.covolume L =
+      |(Matrix.of (fun j i => (b j : Fin n → ℝ) i)).det| at hb
+  change ZLattice.covolume L =
+      |(Matrix.of (fun j i => (b0 j : Fin n → ℝ) i)).det| at hb0
+  have hmat : Matrix.of (fun j i => (b0 j : Fin n → ℝ) i) = D.transpose := by
+    ext i j
+    simp [b0, matrixBasisF_apply]
+  calc
+    |(latticeBasisMatrixF D hD b).det| =
+        |(Matrix.of (fun j i => (b j : Fin n → ℝ) i)).det| := by
+          simp [latticeBasisMatrixF]
+    _ = ZLattice.covolume L := hb.symm
+    _ = |(Matrix.of (fun j i => (b0 j : Fin n → ℝ) i)).det| := hb0
+    _ = |D.det| := by rw [hmat, Matrix.det_transpose]
+
 end
 
 end Jsp000216
