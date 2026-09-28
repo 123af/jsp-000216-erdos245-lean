@@ -28,3 +28,4 @@ import Jsp000216.GapWindow
 import Jsp000216.NatIntBridge
 import Jsp000216.InverseBridge
 import Jsp000216.GapContradiction
+import Jsp000216.GAPBasic
