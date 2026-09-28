@@ -19,14 +19,14 @@ lemma bohrLatticePointF_cast_real_eq_mulVec {N : ℕ}
     intCastVecF, Matrix.map_apply, Int.cast_sum, Int.cast_mul]
   rfl
 
-/-- The box-Minkowski family for the Bohr congruence lattice gives exactly the
+/-- The box-Minkowski family for the Bohr congruence lattice gives a
 certificate consumed by the progression extraction layer. -/
-theorem bohrLatticeCertificateF_of_minkowski {N : ℕ} [NeZero N]
+theorem nonempty_bohrLatticeCertificateF_of_minkowski {N : ℕ} [NeZero N]
     (Gamma : Finset (ZMod N)) (hN : 1 < N)
     (R : ℝ) (hR : 0 < R) :
-    BohrLatticeCertificateF Gamma R
+    Nonempty (BohrLatticeCertificateF Gamma R
       (minkowskiBoxConstantF (Gamma.card + 1) * (N : ℝ) ^ Gamma.card /
-        R ^ (Gamma.card + 1)) := by
+        R ^ (Gamma.card + 1))) := by
   let D : Matrix (Fin (Gamma.card + 1)) (Fin (Gamma.card + 1)) ℝ :=
     bohrLatticeMatrixF Gamma
   have hD : D.det ≠ 0 := by
@@ -48,6 +48,7 @@ theorem bohrLatticeCertificateF_of_minkowski {N : ℕ} [NeZero N]
       _ = Matrix.mulVec D (intCastVecF (coeff i)) := by rfl
       _ = v i := hcoeff i
   let scale : Fin (Gamma.card + 1) → ℝ := fun i => ‖v i‖ / R
+  constructor
   refine
     { coeff := coeff
       scale := scale
