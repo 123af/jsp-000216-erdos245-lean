@@ -28,6 +28,23 @@ theorem exists_proper_bohr_progressionF {N : ℕ} [NeZero N]
     dsimp [C]
     nlinarith
 
+/-- At scale `N/4`, the denominator in the raw progression lower bound has
+one residual factor `1/N`; everything else depends only on the dimension. -/
+lemma bohrMinkowski_raw_denominator_eqF {N : ℕ} [NeZero N]
+    (Gamma : Finset (ZMod N)) (hN : 1 < N) :
+    ((4 * (Gamma.card + 1) : ℝ) ^ (Gamma.card + 1)) *
+        (minkowskiBoxConstantF (Gamma.card + 1) * (N : ℝ) ^ Gamma.card /
+          ((N : ℝ) / 4) ^ (Gamma.card + 1)) =
+      ((16 * (Gamma.card + 1) : ℝ) ^ (Gamma.card + 1) *
+          minkowskiBoxConstantF (Gamma.card + 1)) / (N : ℝ) := by
+  have hNr : (0 : ℝ) < N := by
+    exact_mod_cast (Nat.zero_lt_one.trans hN)
+  have hN0 : (N : ℝ) ≠ 0 := hNr.ne'
+  rw [div_pow]
+  field_simp [hN0]
+  rw [pow_succ]
+  ring
+
 /-- The same progression carries the raw quantitative lower bound supplied by
 the certificate layer, before simplifying the dimension-only constant. -/
 theorem exists_proper_bohr_progression_raw_boundF {N : ℕ} [NeZero N]
