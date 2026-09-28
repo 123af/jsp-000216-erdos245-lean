@@ -93,6 +93,15 @@ theorem uniformCyclicDenseCoreF_from_bohr (q : ℕ) (hq : 1 ≤ q) :
       _ = N := by simp
   exact ⟨Q, hQrank', hQproper, hQsub, hBcardN.trans hNboundNat⟩
 
+/-- Existential interface to the Bohr construction.  Downstream arguments
+only need the existence of uniform constants, not their enormous explicit
+closed values.  Keeping the witnesses behind this generic theorem prevents
+specialization from forcing kernel evaluation of those values. -/
+theorem exists_uniformCyclicDenseCoreF_from_bohr (q : ℕ) (hq : 1 ≤ q) :
+    ∃ R D : ℕ, UniformCyclicDenseCoreF q R D := by
+  exact ⟨bohrCoreRankF q, bohrCoreCardFactorF q,
+    uniformCyclicDenseCoreF_from_bohr q hq⟩
+
 end
 
 end Jsp000216
