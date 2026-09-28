@@ -25,7 +25,7 @@ lemma erdos245_density_nat_of_realF (S : Set ℕ)
       atTop (𝓝 0)) :
     Tendsto (fun N : ℕ => (countInF S N : ℝ) / N) atTop (𝓝 0) := by
   have h := hden.comp tendsto_natCast_atTop_atTop
-  simpa [countInF_eq_ncard, Nat.floor_natCast] using h
+  simpa [Function.comp_def, countInF_eq_ncard, Nat.floor_natCast] using h
 
 /-- The reciprocal-integer lower bounds occur frequently also on the real
 cutoff filter, by the cofinal inclusion `ℕ → ℝ`. -/
@@ -39,8 +39,10 @@ theorem erdos245_frequently_real_ratio_geF
       (((3 : ℝ) - 1 / (m : ℝ) : ℝ) : EReal) ≤ erdos245RealRatioF S x := by
   have hdenNat := erdos245_density_nat_of_realF S hden
   have hfreq := erdos245_frequently_ratio_geF hS hpos hdenNat hm
-  exact tendsto_natCast_atTop_atTop.frequently_map
-    (fun N hN => by simpa [erdos245RealRatio_natCastF] using hN) hfreq
+  exact Tendsto.frequently_map (fun N : ℕ => (N : ℝ))
+    tendsto_natCast_atTop_atTop
+    (fun N hN => by simpa [erdos245RealRatio_natCastF] using hN)
+    hfreq
 
 /-- Real-cutoff positive-set form of Erdős #245. -/
 theorem erdos245_real_limsup_positiveF
