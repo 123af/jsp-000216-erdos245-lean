@@ -166,8 +166,7 @@ lemma carrier_cyclicGapFreimanImageF {N : ℕ} [NeZero N]
   · rintro ⟨w, hw, rfl⟩
     obtain ⟨x, hx⟩ := Q.mem_carrier_iff.mp hw
     refine ⟨x, ?_⟩
-    rw [hx]
-    exact eval_cyclicGapFreimanImageF Q D hQD L hadd x
+    simpa only [hx] using (eval_cyclicGapFreimanImageF Q D hQD L hadd x)
 
 /-- Directly lift a proper cyclic GAP through an order-eight Freiman model to
 our integer `GAPF`, with no rank or cardinality loss. -/
