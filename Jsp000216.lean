@@ -33,3 +33,4 @@ import Jsp000216.ChainCore
 import Jsp000216.ChainDeterminant
 import Jsp000216.ConicReduction
 import Jsp000216.CramerBound
+import Jsp000216.ReducedChain
