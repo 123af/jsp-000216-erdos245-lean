@@ -44,4 +44,20 @@ lemma windowF_add_eq_at_doubling_gap
       mem_windowF.mpr ⟨hpos hxS, hxle, hxS⟩, y,
       mem_windowF.mpr ⟨hpos hyS, hyle, hyS⟩, rfl⟩
 
+/-- At a doubling gap there are exactly the first `i+1` elements of `S`
+below the doubled cutoff. -/
+lemma countInF_two_enumerate_eq_at_doubling_gap
+    {S : Set ℕ} (hS : S.Infinite) (hpos : S ⊆ Set.Ici 1) (i : ℕ)
+    (hgap : 2 * enumerateF S i < enumerateF S (i + 1)) :
+    countInF S (2 * enumerateF S i) = i + 1 := by
+  have hlo : i < countInF S (2 * enumerateF S i) :=
+    (enumerateF_le_iff_lt_countInF hS hpos i (2 * enumerateF S i)).mp (by omega)
+  have hhi : ¬(i + 1 < countInF S (2 * enumerateF S i)) := by
+    intro htooMany
+    have hnext : enumerateF S (i + 1) ≤ 2 * enumerateF S i :=
+      (enumerateF_le_iff_lt_countInF hS hpos (i + 1)
+        (2 * enumerateF S i)).mpr htooMany
+    omega
+  omega
+
 end Jsp000216
