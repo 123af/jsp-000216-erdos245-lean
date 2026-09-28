@@ -55,5 +55,6 @@ import Jsp000216.MinkowskiBoxLift
 import Jsp000216.MinkowskiBoxTheorem
 import Jsp000216.BohrMinkowski
 import Jsp000216.BohrMinkowskiProgression
+import Jsp000216.CyclicDenseCoreFromBohr
 import Jsp000216.ConditionalGap
 import Jsp000216.CoreAssembly
