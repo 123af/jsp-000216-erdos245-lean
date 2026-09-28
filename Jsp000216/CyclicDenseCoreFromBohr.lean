@@ -47,7 +47,10 @@ theorem uniformCyclicDenseCoreF_from_bohr (q : ℕ) (hq : 1 ≤ q) :
   have hterm :
       (16 * m) ^ m * 2 ^ (m * (m - 1) / 2) ≤ bohrCoreCardFactorF q := by
     dsimp [bohrCoreCardFactorF]
-    exact Finset.single_le_sum (fun i hi => Nat.zero_le _) hmmem
+    exact Finset.single_le_sum
+      (s := Finset.range (bohrCoreRankF q + 1))
+      (f := fun i : ℕ => (16 * i) ^ i * 2 ^ (i * (i - 1) / 2))
+      (fun i hi => Nat.zero_le _) hmmem
   have hKleD :
       (16 * (m : ℝ)) ^ m * minkowskiBoxConstantF m ≤
         (bohrCoreCardFactorF q : ℝ) := by
