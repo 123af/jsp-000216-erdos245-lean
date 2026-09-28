@@ -42,7 +42,7 @@ lemma bohrMinkowski_raw_denominator_eqF {N : ℕ} [NeZero N]
   rw [div_pow]
   field_simp [hN0]
   rw [pow_succ]
-  ring
+  ring_nf
 
 /-- The same progression carries the raw quantitative lower bound supplied by
 the certificate layer, before simplifying the dimension-only constant. -/
