@@ -51,5 +51,6 @@ import Jsp000216.BohrProgression
 import Jsp000216.LatticePrimitive
 import Jsp000216.MinkowskiBoxBasis
 import Jsp000216.MinkowskiBoxInduction
+import Jsp000216.MinkowskiBoxLift
 import Jsp000216.ConditionalGap
 import Jsp000216.CoreAssembly
