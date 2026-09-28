@@ -27,9 +27,16 @@ def erdos245CoverFactorF : ℕ :=
 
 /-- The structural input previously isolated as an assumption is now an
 unconditional theorem: every finite integer set of doubling at most `12` is
-contained in a uniformly bounded-rank GAP of uniformly linear box size. -/
+contained in a uniformly bounded-rank GAP of uniformly linear box size.
+
+The statement deliberately keeps the final cover constants in symbolic form
+rather than unfolding the named aliases above.  This prevents Lean from trying
+to evaluate the astronomically large closed exponent while checking the final
+wrapper theorem. -/
 theorem erdos245_uniformGAPCoverF :
-    UniformGAPCoverF 12 erdos245CoverRankF erdos245CoverFactorF := by
+    UniformGAPCoverF 12
+      (erdos245DenseRankF + 12 ^ 5 * erdos245DenseFactorF)
+      (2 ^ (erdos245DenseRankF + 12 ^ 5 * erdos245DenseFactorF) * 12 ^ 4) := by
   have hqpos : 0 < erdos245CyclicDensityQF := by
     dsimp [erdos245CyclicDensityQF]
     positivity
