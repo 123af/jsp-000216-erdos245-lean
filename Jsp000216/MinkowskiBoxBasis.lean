@@ -71,7 +71,8 @@ lemma deleteProjectionF_rawTailLiftF {n : ℕ} (h : Fin (n + 1))
   rw [Finset.sum_mul, Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro j hj
-  ring_nf
+  dsimp [intCastVecF]
+  ring
 
 /-- Integral combinations of a matrix's columns lie in the integer span of
 its column basis. -/
