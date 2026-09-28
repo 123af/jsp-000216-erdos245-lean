@@ -36,7 +36,11 @@ theorem progression_proper [NeZero N]
   let v := C.combination u
   have hu (i : Fin (Gamma.card + 1)) :
       |u i| ≤ (2 * C.radius i : ℕ) := by
-    exact CyclicGAPF.coeff_sub_abs_le_two_mul C.progression x y i
+    have hx := C.progression.coeff_abs_le x i
+    have hy := C.progression.coeff_abs_le y i
+    rw [abs_le] at hx hy ⊢
+    dsimp only [u]
+    constructor <;> omega
   have hv0cast : (v 0 : ZMod N) = 0 := by
     have hx := C.eval_progression x
     have hy := C.eval_progression y
@@ -141,11 +145,14 @@ theorem progression_card_lower_bound
   have hscale (i : Fin (Gamma.card + 1)) : 0 < C.scale i := C.scale_pos i
   have hprodscale : 0 < ∏ i, C.scale i := Finset.prod_pos fun i _ => hscale i
   have hbound : 0 < bound := lt_of_lt_of_le hprodscale C.product_le
+  have hmul :
+      c ^ (Gamma.card + 1) * (∏ i, C.scale i) ≤
+        c ^ (Gamma.card + 1) * bound :=
+    mul_le_mul_of_nonneg_left C.product_le (pow_nonneg hc.le _)
   have hreciprocal : (c ^ (Gamma.card + 1) * bound)⁻¹ ≤
       (c ^ (Gamma.card + 1) * ∏ i, C.scale i)⁻¹ := by
-    apply (inv_le_inv₀ (mul_pos (pow_pos hc _) hbound)
-      (mul_pos (pow_pos hc _) hprodscale)).2
-    exact mul_le_mul_of_nonneg_left C.product_le (pow_nonneg hc.le _)
+    exact one_div_le_one_div_of_le
+      (mul_pos (pow_pos hc _) hprodscale) hmul
   have hproduct :
       (c ^ (Gamma.card + 1) * ∏ i, C.scale i)⁻¹ ≤
         ∏ i : Fin (Gamma.card + 1), (2 * (C.radius i : ℝ) + 1) := by
