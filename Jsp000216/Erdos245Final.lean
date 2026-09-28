@@ -10,8 +10,11 @@ noncomputable section
 lemma positivePart_inter_IccF (A : Set ℕ) (N : ℕ) :
     (A ∩ Set.Ici 1) ∩ Set.Icc 1 N = A ∩ Set.Icc 1 N := by
   ext x
-  simp only [Set.mem_inter_iff, Set.mem_Ici, Set.mem_Icc]
-  omega
+  constructor
+  · rintro ⟨⟨hxA, hx1⟩, hxIcc⟩
+    exact ⟨hxA, hxIcc⟩
+  · rintro ⟨hxA, hxIcc⟩
+    exact ⟨⟨hxA, hxIcc.1⟩, hxIcc⟩
 
 /-- Full real-cutoff statement of Erdős Problem #245 (without the external
 `answer(True)` wrapper used by the Formal Conjectures repository). -/
@@ -58,7 +61,7 @@ theorem erdos245_limsupF
     have hn :
         ((S + S) ∩ Set.Icc 1 ⌊x⌋₊).ncard ≤
           ((A + A) ∩ Set.Icc 1 ⌊x⌋₊).ncard :=
-      Set.ncard_le_ncard hfin hinter
+      Set.ncard_le_ncard hinter hfin
     apply EReal.div_le_div_right_of_nonneg (by positivity)
     exact_mod_cast hn
   have hLmono :
