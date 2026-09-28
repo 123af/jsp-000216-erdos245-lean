@@ -42,5 +42,6 @@ import Jsp000216.CyclicGAP
 import Jsp000216.FreimanFourfold
 import Jsp000216.CyclicGapLinearize
 import Jsp000216.CyclicCoreReduction
+import Jsp000216.CyclicFourier
 import Jsp000216.ConditionalGap
 import Jsp000216.CoreAssembly
