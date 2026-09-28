@@ -41,10 +41,10 @@ lemma bohrMinkowski_raw_denominator_eqF {N : ℕ} [NeZero N]
   have hN0 : (N : ℝ) ≠ 0 := hNr.ne'
   rw [div_pow]
   field_simp [hN0]
-  rw [pow_succ]
+  simp_rw [pow_succ]
   have hp :
-      (4 : ℝ) ^ Gamma.card * (4 + (Gamma.card : ℝ) * 4) ^ Gamma.card =
-        (16 + (Gamma.card : ℝ) * 16) ^ Gamma.card := by
+      (((Gamma.card : ℝ) + 1) * 16) ^ Gamma.card =
+        (4 * ((Gamma.card : ℝ) + 1)) ^ Gamma.card * 4 ^ Gamma.card := by
     rw [← mul_pow]
     congr 1
     ring
