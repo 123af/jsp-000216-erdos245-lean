@@ -51,9 +51,10 @@ theorem exists_minkowskiBox_familyF :
       have hz0 : ∀ j, z j ≠ 0 := by
         intro j hzj
         apply hwli.ne_zero j
-        rw [← hz j]
+        rw [← hz j, hzj]
         funext i
-        simp [hzj, intCastVecF, Matrix.mulVec]
+        change ∑ k, projectedTailF h B i k * ((0 : ℤ) : ℝ) = 0
+        simp
       let v : Fin (n + 1) → (Fin (n + 1) → ℝ) :=
         Fin.cons (fun i => B i 0) (fun j => reducedTailLiftF h B (z j))
       have hvmem : ∀ i, v i ∈
