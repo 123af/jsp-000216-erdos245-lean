@@ -32,7 +32,7 @@ so specializing to the large Ruzsa-model density parameter never asks the
 kernel to evaluate an astronomically large natural-number power. -/
 theorem erdos245_exists_uniformGAPCoverF :
     ∃ R C : ℕ, UniformGAPCoverF 12 R C := by
-  have hq : 1 ≤ 32 * 12 ^ 16 := by positivity
+  have hq : 1 ≤ 32 * 12 ^ 16 := by norm_num
   obtain ⟨R, D, hcyc⟩ :=
     exists_uniformCyclicDenseCoreF_from_bohr (32 * 12 ^ 16) hq
   exact exists_uniformGAPCoverF_of_cyclicDenseCore
