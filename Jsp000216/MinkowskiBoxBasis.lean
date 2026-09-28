@@ -48,6 +48,7 @@ noncomputable def projectedTailBasisF {n : ℕ}
     (h : Fin (n + 1)) (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
     (hdet : B.det ≠ 0) (hB : B h 0 ≠ 0) (j : Fin n) :
     projectedTailBasisF h B hdet hB j = (projectedTailF h B).col j := by
+  funext i
   simp [projectedTailBasisF, matrixBasisF_apply]
 
 /-- Lift integral tail coordinates back to the original matrix columns. -/
@@ -70,7 +71,7 @@ lemma deleteProjectionF_rawTailLiftF {n : ℕ} (h : Fin (n + 1))
   rw [Finset.sum_mul, Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro j hj
-  ring
+  ring_nf
 
 /-- Integral combinations of a matrix's columns lie in the integer span of
 its column basis. -/
