@@ -5,6 +5,16 @@ namespace Jsp000216
 
 noncomputable section
 
+/-- Existentially package the explicit GAP-cover constants while they are still
+variables.  Keeping this wrapper generic is important: after specialization to
+Erdős #245 the coarse explicit exponent is astronomically large, but its value
+is irrelevant to the infinite argument. -/
+theorem exists_uniformGAPCoverF_of_denseCore {K R D : ℕ}
+    (hK : 1 ≤ K) (hcore : DenseGAPCoreF K R D) :
+    ∃ R' C' : ℕ, UniformGAPCoverF K R' C' := by
+  exact ⟨R + K ^ 5 * D, 2 ^ (R + K ^ 5 * D) * K ^ 4,
+    uniformGAPCoverF_of_denseCore hK hcore⟩
+
 /-- Cyclic density parameter required by the Ruzsa-model reduction at
 integer doubling constant `12`. -/
 def erdos245CyclicDensityQF : ℕ := 32 * 12 ^ 16
@@ -16,25 +26,10 @@ def erdos245DenseRankF : ℕ := bohrCoreRankF erdos245CyclicDensityQF
 /-- Cardinality factor of the proper dense integer GAP core. -/
 def erdos245DenseFactorF : ℕ := 16 * bohrCoreCardFactorF erdos245CyclicDensityQF
 
-/-- Rank budget for one explicit final (not necessarily proper) GAP cover. -/
-def erdos245CoverRankF : ℕ :=
-  erdos245DenseRankF + 12 ^ 5 * erdos245DenseFactorF
-
-/-- Box-cardinality factor for the same explicit final GAP cover.
-
-This value is intentionally not unfolded in the final structural theorem:
-its exponent is astronomically large, while the infinite argument only needs
-existence of some uniform constants. -/
-def erdos245CoverFactorF : ℕ :=
-  2 ^ erdos245CoverRankF * 12 ^ 4
-
 /-- The structural input previously isolated as an assumption is now
 unconditional: there exist fixed rank and box-cardinality constants such that
 every finite integer set of doubling at most `12` is contained in a GAP with
-those uniform bounds.
-
-The constants are existentially packaged so the kernel never needs to reduce
-the enormous closed exponent occurring in one coarse explicit choice. -/
+those uniform bounds. -/
 theorem erdos245_exists_uniformGAPCoverF :
     ∃ R C : ℕ, UniformGAPCoverF 12 R C := by
   have hqpos : 0 < erdos245CyclicDensityQF := by
@@ -61,14 +56,7 @@ theorem erdos245_exists_uniformGAPCoverF :
       hcyc'
   have hcore : DenseGAPCoreF 12 erdos245DenseRankF erdos245DenseFactorF := by
     exact hcore0
-  have hcover :=
-    uniformGAPCoverF_of_denseCore
-      (K := 12)
-      (R := erdos245DenseRankF)
-      (D := erdos245DenseFactorF)
-      (by omega)
-      hcore
-  exact ⟨_, _, hcover⟩
+  exact exists_uniformGAPCoverF_of_denseCore (by omega) hcore
 
 end
 
