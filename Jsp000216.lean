@@ -38,5 +38,6 @@ import Jsp000216.GAPChain
 import Jsp000216.GAPCoverInterface
 import Jsp000216.GAPCoverReduction
 import Jsp000216.CyclicModel
+import Jsp000216.CyclicGAP
 import Jsp000216.ConditionalGap
 import Jsp000216.CoreAssembly
