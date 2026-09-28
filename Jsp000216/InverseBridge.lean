@@ -62,16 +62,13 @@ lemma enumerateF_linear_bound_at_gap
     (natCast_mem_natToIntFinsetF hX1)
     (natCast_mem_natToIntFinsetF hXi)
     h01 h1i
-  have hsumle : (A + A).card ≤ 3 * (i + 1) - 4 := by
-    rw [hAcard] at hAsmall
-    exact hAsmall
   have hLle :
       (A + A).card - A.card + 1 ≤ 2 * (i + 1) := by
     rw [hAcard]
     omega
   have hmul :
       ((A + A).card - A.card + 1) * enumerateF S 1 ≤
-        (2 * (i + 1)) * enumerateF S 1 :=
+        (2 * (i + 1)) * enumerateF S 1 := by
     exact Nat.mul_le_mul_right (enumerateF S 1) hLle
   have he0 : enumerateF S 0 ≤ enumerateF S 0 * (i + 1) := by
     calc
