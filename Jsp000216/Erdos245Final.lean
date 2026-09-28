@@ -70,6 +70,18 @@ theorem erdos245_limsupF
     limsup_le_limsup (Filter.Eventually.of_forall hratio)
   exact hSmain.trans hLmono
 
+/-- The right-hand side of the `FormalConjectures/ErdosProblems/245.lean`
+statement, written in the same cutoff/counting form.  The only piece omitted
+here is Formal Conjectures' meta-level `answer(True)` wrapper. -/
+theorem erdos245_formalConjectures_rhsF :
+    ∀ (A : Set ℕ), A.Infinite →
+      atTop.Tendsto (fun N ↦ (A ∩ Icc 1 ⌊N⌋₊ |>.ncard : ℝ) / N) (𝓝 0) →
+      3 ≤ atTop.limsup
+        fun N : ℝ ↦ ((A + A) ∩ Icc 1 ⌊N⌋₊ |>.ncard : EReal)
+          / (A ∩ Icc 1 ⌊N⌋₊).ncard := by
+  intro A hA hden
+  simpa [erdos245RealRatioF] using erdos245_limsupF A hA hden
+
 end
 
 end Jsp000216
