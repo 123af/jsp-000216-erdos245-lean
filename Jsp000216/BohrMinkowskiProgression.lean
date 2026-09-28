@@ -68,6 +68,30 @@ theorem exists_proper_bohr_progression_raw_boundF {N : ℕ} [NeZero N]
     nlinarith
   · simpa using C.progression_carrier_card_lower_bound hN hR (by nlinarith)
 
+/-- The raw reciprocal lower bound can be cleared of denominators: the modulus
+is at most a dimension-only real constant times the progression cardinality. -/
+theorem exists_proper_bohr_progression_dimension_boundF {N : ℕ} [NeZero N]
+    (Gamma : Finset (ZMod N)) (hN : 1 < N) :
+    ∃ Q : CyclicGAPF N,
+      Q.rank = Gamma.card + 1 ∧
+      Q.Proper ∧
+      Q.carrier ⊆ cyclicBohrSetF Gamma (1 / 2) ∧
+      (N : ℝ) ≤
+        ((16 * (Gamma.card + 1) : ℝ) ^ (Gamma.card + 1) *
+          minkowskiBoxConstantF (Gamma.card + 1)) * (Q.carrier.card : ℝ) := by
+  obtain ⟨Q, hQrank, hQproper, hQsub, hraw⟩ :=
+    exists_proper_bohr_progression_raw_boundF Gamma hN
+  have hden := bohrMinkowski_raw_denominator_eqF Gamma hN
+  rw [hden, inv_div] at hraw
+  have hK : 0 <
+      (16 * (Gamma.card + 1) : ℝ) ^ (Gamma.card + 1) *
+        minkowskiBoxConstantF (Gamma.card + 1) := by
+    dsimp [minkowskiBoxConstantF]
+    positivity
+  have hclear := (div_le_iff₀ hK).mp hraw
+  refine ⟨Q, hQrank, hQproper, hQsub, ?_⟩
+  simpa [mul_comm] using hclear
+
 end
 
 end Jsp000216
