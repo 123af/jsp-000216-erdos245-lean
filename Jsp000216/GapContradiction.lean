@@ -46,16 +46,16 @@ lemma contradiction_of_arbitrarily_late_doubling_gaps
     have hei := henum_ge i
     dsimp [s] at his
     omega
-  have hLsi : Ls ≤ i := by
+  have hLs_le_i : Ls ≤ i := by
     dsimp [s] at his
     omega
-  have hTwoEiLs : Ls ≤ 2 * enumerateF S i := by
-    calc
-      Ls ≤ i := hLsi
-      _ ≤ enumerateF S i := by
-        have hei := henum_ge i
-        omega
-      _ ≤ 2 * enumerateF S i := by omega
+  have hi_le_ei : i ≤ enumerateF S i := by
+    have hei := henum_ge i
+    omega
+  have hLs_le_ei : Ls ≤ enumerateF S i := hLs_le_i.trans hi_le_ei
+  have hei_le_two : enumerateF S i ≤ 2 * enumerateF S i := by
+    omega
+  have hTwoEiLs : Ls ≤ 2 * enumerateF S i := hLs_le_ei.trans hei_le_two
   have hscaled_i := hLs (2 * enumerateF S i) hTwoEiLs
   rw [countInF_two_enumerate_eq_at_doubling_gap hS hpos i hgap] at hscaled_i
   have hsmall :
