@@ -36,8 +36,10 @@ theorem progression_proper [NeZero N]
   let v := C.combination u
   have hu (i : Fin (Gamma.card + 1)) :
       |u i| ≤ (2 * C.radius i : ℕ) := by
-    have hx := C.progression.coeff_abs_le x i
-    have hy := C.progression.coeff_abs_le y i
+    have hx : |C.progression.coeff x i| ≤ (C.radius i : ℤ) := by
+      simpa using C.progression.coeff_abs_le x i
+    have hy : |C.progression.coeff y i| ≤ (C.radius i : ℤ) := by
+      simpa using C.progression.coeff_abs_le y i
     rw [abs_le] at hx hy ⊢
     dsimp only [u]
     constructor <;> omega
@@ -151,8 +153,9 @@ theorem progression_card_lower_bound
     mul_le_mul_of_nonneg_left C.product_le (pow_nonneg hc.le _)
   have hreciprocal : (c ^ (Gamma.card + 1) * bound)⁻¹ ≤
       (c ^ (Gamma.card + 1) * ∏ i, C.scale i)⁻¹ := by
-    exact one_div_le_one_div_of_le
-      (mul_pos (pow_pos hc _) hprodscale) hmul
+    simpa only [one_div] using
+      (one_div_le_one_div_of_le
+        (mul_pos (pow_pos hc _) hprodscale) hmul)
   have hproduct :
       (c ^ (Gamma.card + 1) * ∏ i, C.scale i)⁻¹ ≤
         ∏ i : Fin (Gamma.card + 1), (2 * (C.radius i : ℝ) + 1) := by
@@ -165,7 +168,7 @@ theorem progression_card_lower_bound
       _ = ∏ i : Fin (Gamma.card + 1), (c * C.scale i)⁻¹ := by
             rw [Finset.prod_inv_distrib]
       _ ≤ ∏ i : Fin (Gamma.card + 1), (2 * (C.radius i : ℝ) + 1) := by
-            apply Finset.prod_le_prod
+            apply Finset.prod_le_prod₀
             · intro i hi
               exact inv_nonneg.mpr (mul_nonneg hc.le (C.scale_pos i).le)
             · intro i hi
