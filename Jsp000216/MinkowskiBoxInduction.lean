@@ -80,7 +80,7 @@ theorem exists_shortest_first_column_basisF {n : ℕ}
         x ≠ 0 → ‖fun i => B i 0‖ ≤ ‖x‖) ∧
       |B h 0| = ‖fun i => B i 0‖ ∧
       B h 0 ≠ 0 ∧
-      Submodule.span ℤ (Set.range (matrixBasisF B (by assumption))) ≤
+      Submodule.span ℤ (Set.range (fun j => fun i => B i j)) ≤
         Submodule.span ℤ (Set.range (matrixBasisF D hD)) := by
   let bD := matrixBasisF D hD
   let L := Submodule.span ℤ (Set.range bD)
@@ -129,7 +129,6 @@ theorem exists_shortest_first_column_basisF {n : ℕ}
     rw [latticeBasisMatrixF_apply]
     have hb0' : b (0 : Fin (n + 1)) = vL := by simpa using hb0
     rw [hb0']
-    rfl
   have hcolmem : (fun i => B i 0) ∈
       Submodule.span ℤ (Set.range (matrixBasisF D hD)) := by
     rw [hcol]
@@ -151,10 +150,14 @@ theorem exists_shortest_first_column_basisF {n : ℕ}
     apply norm_eq_zero.mp
     rw [← hh, hz, abs_zero]
   have hspan :
-      Submodule.span ℤ (Set.range (matrixBasisF B hBdet)) ≤
+      Submodule.span ℤ (Set.range (fun j => fun i => B i j)) ≤
         Submodule.span ℤ (Set.range (matrixBasisF D hD)) := by
-    dsimp [B, hBdet]
-    exact span_matrixBasis_latticeBasisMatrixF_le D hD b
+    apply Submodule.span_le.mpr
+    rintro _ ⟨j, rfl⟩
+    dsimp [B]
+    change (b j : Fin (n + 1) → ℝ) ∈
+      Submodule.span ℤ (Set.range (matrixBasisF D hD))
+    exact (b j).property
   exact ⟨B, h, hBdet, habs, hcolmem, hcol0, hshort, hh, hB0, hspan⟩
 
 end
