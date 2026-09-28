@@ -80,7 +80,8 @@ theorem erdos245_formalConjectures_rhsF :
         fun N : ℝ ↦ ((A + A) ∩ Icc 1 ⌊N⌋₊ |>.ncard : EReal)
           / (A ∩ Icc 1 ⌊N⌋₊).ncard := by
   intro A hA hden
-  simpa [erdos245RealRatioF] using erdos245_limsupF A hA hden
+  change (3 : EReal) ≤ limsup (erdos245RealRatioF A) atTop
+  exact erdos245_limsupF A hA hden
 
 end
 
