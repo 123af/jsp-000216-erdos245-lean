@@ -42,7 +42,14 @@ lemma bohrMinkowski_raw_denominator_eqF {N : ℕ} [NeZero N]
   rw [div_pow]
   field_simp [hN0]
   rw [pow_succ]
-  ring_nf
+  have hp :
+      (4 : ℝ) ^ Gamma.card * (4 + (Gamma.card : ℝ) * 4) ^ Gamma.card =
+        (16 + (Gamma.card : ℝ) * 16) ^ Gamma.card := by
+    rw [← mul_pow]
+    congr 1
+    ring
+  rw [hp]
+  ring
 
 /-- The same progression carries the raw quantitative lower bound supplied by
 the certificate layer, before simplifying the dimension-only constant. -/
