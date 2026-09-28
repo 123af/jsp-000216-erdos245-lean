@@ -16,27 +16,27 @@ def erdos245DenseRankF : ℕ := bohrCoreRankF erdos245CyclicDensityQF
 /-- Cardinality factor of the proper dense integer GAP core. -/
 def erdos245DenseFactorF : ℕ := 16 * bohrCoreCardFactorF erdos245CyclicDensityQF
 
-/-- Rank budget for the final (not necessarily proper) GAP cover used by the
-infinite counting argument. -/
+/-- Rank budget for one explicit final (not necessarily proper) GAP cover. -/
 def erdos245CoverRankF : ℕ :=
   erdos245DenseRankF + 12 ^ 5 * erdos245DenseFactorF
 
-/-- Box-cardinality factor for the final GAP cover. -/
+/-- Box-cardinality factor for the same explicit final GAP cover.
+
+This value is intentionally not unfolded in the final structural theorem:
+its exponent is astronomically large, while the infinite argument only needs
+existence of some uniform constants. -/
 def erdos245CoverFactorF : ℕ :=
   2 ^ erdos245CoverRankF * 12 ^ 4
 
-/-- The structural input previously isolated as an assumption is now an
-unconditional theorem: every finite integer set of doubling at most `12` is
-contained in a uniformly bounded-rank GAP of uniformly linear box size.
+/-- The structural input previously isolated as an assumption is now
+unconditional: there exist fixed rank and box-cardinality constants such that
+every finite integer set of doubling at most `12` is contained in a GAP with
+those uniform bounds.
 
-The statement deliberately keeps the final cover constants in symbolic form
-rather than unfolding the named aliases above.  This prevents Lean from trying
-to evaluate the astronomically large closed exponent while checking the final
-wrapper theorem. -/
-theorem erdos245_uniformGAPCoverF :
-    UniformGAPCoverF 12
-      (erdos245DenseRankF + 12 ^ 5 * erdos245DenseFactorF)
-      (2 ^ (erdos245DenseRankF + 12 ^ 5 * erdos245DenseFactorF) * 12 ^ 4) := by
+The constants are existentially packaged so the kernel never needs to reduce
+the enormous closed exponent occurring in one coarse explicit choice. -/
+theorem erdos245_exists_uniformGAPCoverF :
+    ∃ R C : ℕ, UniformGAPCoverF 12 R C := by
   have hqpos : 0 < erdos245CyclicDensityQF := by
     dsimp [erdos245CyclicDensityQF]
     positivity
@@ -68,7 +68,7 @@ theorem erdos245_uniformGAPCoverF :
       (D := erdos245DenseFactorF)
       (by omega)
       hcore
-  exact hcover
+  exact ⟨_, _, hcover⟩
 
 end
 
