@@ -51,6 +51,31 @@ theorem linearIndependent_finCons_reducedTailLiftF {n : ℕ}
   change LinearIndependent ℝ (Fin.cons v0 u)
   exact linearIndependent_finCons.mpr ⟨htail, hvnot⟩
 
+/-- Multiplying the pointwise factor-two lift bound gives a total `2^n`
+loss for an `n`-dimensional projected family. -/
+lemma prod_norm_reducedTailLiftF_le_two_pow {n : ℕ}
+    (h : Fin (n + 1))
+    (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
+    (hdet : B.det ≠ 0) (hB0 : B h 0 ≠ 0)
+    (hh : |B h 0| = ‖fun i => B i 0‖)
+    (hshort : ∀ x ∈ Submodule.span ℤ (Set.range (matrixBasisF B hdet)),
+      x ≠ 0 → ‖fun i => B i 0‖ ≤ ‖x‖)
+    (z : Fin n → (Fin n → ℤ)) (hz : ∀ j, z j ≠ 0) :
+    (∏ j, ‖reducedTailLiftF h B (z j)‖) ≤
+      (2 : ℝ) ^ n *
+        ∏ j, ‖Matrix.mulVec (projectedTailF h B) (intCastVecF (z j))‖ := by
+  calc
+    (∏ j, ‖reducedTailLiftF h B (z j)‖) ≤
+        ∏ j, (2 : ℝ) *
+          ‖Matrix.mulVec (projectedTailF h B) (intCastVecF (z j))‖ := by
+      refine Finset.prod_le_prod₀ (fun j hj => norm_nonneg _) (fun j hj => ?_)
+      exact norm_reducedTailLiftF_le_two_mul_projected
+        h B hdet hB0 hh hshort (hz j)
+    _ = (2 : ℝ) ^ n *
+        ∏ j, ‖Matrix.mulVec (projectedTailF h B) (intCastVecF (z j))‖ := by
+      rw [Finset.prod_mul_distrib]
+      simp
+
 end
 
 end Jsp000216
