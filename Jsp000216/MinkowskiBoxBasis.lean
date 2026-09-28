@@ -94,6 +94,56 @@ lemma rawTailLiftF_mem_span {n : ℕ}
   simpa [rawTailLiftF] using
     (matrix_mulVec_intCastVecF_mem_span B hB (Fin.cons 0 z))
 
+/-- Integer correction which moves a raw tail lift into the centred strip
+around the hyperplane transverse to the first lattice vector. -/
+noncomputable def reducedTailCoefficientF {n : ℕ}
+    (h : Fin (n + 1)) (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
+    (z : Fin n → ℤ) : ℤ :=
+  -roundedCoefficientF ((rawTailLiftF B z) h / B h 0)
+
+/-- Correct a raw tail lift by an integral multiple of the first column. -/
+noncomputable def reducedTailLiftF {n : ℕ}
+    (h : Fin (n + 1)) (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
+    (z : Fin n → ℤ) : Fin (n + 1) → ℝ :=
+  rawTailLiftF B z + reducedTailCoefficientF h B z • (fun i => B i 0)
+
+lemma reducedTailLiftF_eq_add_real_smul {n : ℕ}
+    (h : Fin (n + 1)) (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
+    (z : Fin n → ℤ) :
+    reducedTailLiftF h B z =
+      rawTailLiftF B z +
+        (reducedTailCoefficientF h B z : ℝ) • (fun i => B i 0) := by
+  rw [reducedTailLiftF, Int.cast_smul_eq_zsmul]
+
+lemma reducedTailCoefficientF_rounding {n : ℕ}
+    (h : Fin (n + 1)) (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
+    (z : Fin n → ℤ) :
+    |(rawTailLiftF B z) h / B h 0 +
+        (reducedTailCoefficientF h B z : ℝ)| ≤ (1 : ℝ) / 2 := by
+  simpa [reducedTailCoefficientF, sub_eq_add_neg] using
+    abs_sub_roundedCoefficientF_le_half ((rawTailLiftF B z) h / B h 0)
+
+lemma reducedTailLiftF_mem_span {n : ℕ}
+    (h : Fin (n + 1)) (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
+    (hB : B.det ≠ 0) (z : Fin n → ℤ) :
+    reducedTailLiftF h B z ∈
+      Submodule.span ℤ (Set.range (matrixBasisF B hB)) := by
+  let L := Submodule.span ℤ (Set.range (matrixBasisF B hB))
+  have hraw : rawTailLiftF B z ∈ L := rawTailLiftF_mem_span B hB z
+  have hcol : (fun i => B i 0) ∈ L := by
+    rw [← matrixBasisF_apply B hB 0]
+    exact Submodule.subset_span (Set.mem_range_self 0)
+  exact L.add_mem hraw (L.smul_mem (reducedTailCoefficientF h B z) hcol)
+
+lemma deleteProjectionF_reducedTailLiftF {n : ℕ}
+    (h : Fin (n + 1)) (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
+    (hB0 : B h 0 ≠ 0) (z : Fin n → ℤ) :
+    deleteProjectionF h (fun i => B i 0) (reducedTailLiftF h B z) =
+      Matrix.mulVec (projectedTailF h B) (intCastVecF z) := by
+  rw [reducedTailLiftF_eq_add_real_smul]
+  rw [deleteProjectionF_add_smul h _ _ _ hB0]
+  exact deleteProjectionF_rawTailLiftF h B z
+
 end
 
 end Jsp000216
