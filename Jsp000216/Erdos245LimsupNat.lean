@@ -50,7 +50,7 @@ theorem erdos245_frequently_ratio_geF
               (countInF S N : ℝ) / (m : ℝ) := by ring
         _ ≤ (countInF (S + S) N : ℝ) := by linarith
     dsimp [erdos245NatRatioF]
-    exact_mod_cast hratio)
+    exact EReal.coe_le_coe hratio)
 
 /-- Natural-cutoff form of Erdős #245 for positive infinite zero-density
 sets: the extended-real limsup of the sumset/counting ratio is at least `3`. -/
@@ -68,7 +68,7 @@ theorem erdos245_nat_limsupF
       Tendsto (fun n : ℕ => (1 : ℝ) / ((n + 1 : ℕ) : ℝ)) atTop (𝓝 0) := by
     have h := (tendsto_one_div_atTop_nhds_zero_nat (𝕜 := ℝ)).comp
       (tendsto_add_atTop_nat 1)
-    simpa [Nat.cast_add, Nat.cast_one] using h
+    simpa [Function.comp_def, Nat.cast_add, Nat.cast_one] using h
   have hlimR :
       Tendsto (fun n : ℕ => (3 : ℝ) - 1 / ((n + 1 : ℕ) : ℝ))
         atTop (𝓝 3) := by
@@ -79,7 +79,7 @@ theorem erdos245_nat_limsupF
         atTop (𝓝 (3 : EReal)) :=
     EReal.tendsto_coe.mpr hlimR
   change (3 : EReal) ≤ L
-  apply ge_of_tendsto hlimE
+  apply le_of_tendsto hlimE
   exact Filter.Eventually.of_forall happrox
 
 end
