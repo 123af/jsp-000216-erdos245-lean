@@ -40,5 +40,6 @@ import Jsp000216.GAPCoverReduction
 import Jsp000216.CyclicModel
 import Jsp000216.CyclicGAP
 import Jsp000216.FreimanFourfold
+import Jsp000216.CyclicGapLinearize
 import Jsp000216.ConditionalGap
 import Jsp000216.CoreAssembly
