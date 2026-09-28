@@ -15,6 +15,14 @@ def intCastVecF {n : ℕ} (z : Fin n → ℤ) : Fin n → ℝ := fun i => (z i :
   funext i
   refine Fin.cases ?_ (fun j => ?_) i <;> simp [intCastVecF]
 
+lemma intCastVecF_ne_zero {n : ℕ} {z : Fin n → ℤ} (hz : z ≠ 0) :
+    intCastVecF z ≠ 0 := by
+  intro hzero
+  apply hz
+  funext i
+  have hi := congrFun hzero i
+  simpa [intCastVecF] using hi
+
 /-- A nonsingular matrix packages its columns as a real basis. -/
 noncomputable def matrixBasisF {n : ℕ} (D : Matrix (Fin n) (Fin n) ℝ)
     (hD : D.det ≠ 0) : Basis (Fin n) ℝ (Fin n → ℝ) :=
@@ -86,6 +94,15 @@ lemma matrix_mulVec_intCastVecF_mem_span {n : ℕ}
   ext i
   simp [Matrix.mulVec, dotProduct, intCastVecF, mul_comm]
 
+lemma matrix_mulVec_intCastVecF_ne_zero {n : ℕ}
+    (D : Matrix (Fin n) (Fin n) ℝ) (hD : D.det ≠ 0)
+    {z : Fin n → ℤ} (hz : z ≠ 0) :
+    Matrix.mulVec D (intCastVecF z) ≠ 0 := by
+  intro hzero
+  have hinj := Matrix.mulVec_injective_of_det_ne_zero hD
+  have hzcast : intCastVecF z = 0 := hinj (by simpa using hzero)
+  exact (intCastVecF_ne_zero hz) hzcast
+
 /-- A raw tail lift is an honest point of the original integer lattice. -/
 lemma rawTailLiftF_mem_span {n : ℕ}
     (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) (hB : B.det ≠ 0)
@@ -144,6 +161,55 @@ lemma deleteProjectionF_reducedTailLiftF {n : ℕ}
   rw [reducedTailLiftF_eq_add_real_smul]
   rw [deleteProjectionF_add_smul h _ _ _ hB0]
   exact deleteProjectionF_rawTailLiftF h B z
+
+lemma reducedTailLiftF_ne_zero {n : ℕ}
+    (h : Fin (n + 1)) (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
+    (hdet : B.det ≠ 0) (hB0 : B h 0 ≠ 0)
+    {z : Fin n → ℤ} (hz : z ≠ 0) :
+    reducedTailLiftF h B z ≠ 0 := by
+  intro hzero
+  have hproj0 : Matrix.mulVec (projectedTailF h B) (intCastVecF z) = 0 := by
+    rw [← deleteProjectionF_reducedTailLiftF h B hB0 z, hzero]
+    simp [deleteProjectionF]
+  exact (matrix_mulVec_intCastVecF_ne_zero
+    (projectedTailF h B) (projectedTailF_det_ne_zero h B hdet hB0) hz) hproj0
+
+lemma norm_reducedTailLiftF_le {n : ℕ}
+    (h : Fin (n + 1)) (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
+    (hh : |B h 0| = ‖fun i => B i 0‖) (hB0 : B h 0 ≠ 0)
+    (z : Fin n → ℤ) {t : ℝ}
+    (hproj : ‖Matrix.mulVec (projectedTailF h B) (intCastVecF z)‖ ≤ t) :
+    ‖reducedTailLiftF h B z‖ ≤ t + ‖fun i => B i 0‖ / 2 := by
+  rw [reducedTailLiftF_eq_add_real_smul]
+  have hproj' :
+      ‖deleteProjectionF h (fun i => B i 0) (rawTailLiftF B z)‖ ≤ t := by
+    rw [deleteProjectionF_rawTailLiftF]
+    exact hproj
+  exact reducedLift_apply_leF h (fun i => B i 0) (rawTailLiftF B z)
+    t (reducedTailCoefficientF h B z : ℝ) hh hB0
+    (reducedTailCoefficientF_rounding h B z) hproj'
+
+/-- If the first column is a shortest nonzero lattice vector, every nonzero
+projected tail vector has a reduced lift with at most twice its projected norm. -/
+lemma norm_reducedTailLiftF_le_two_mul_projected {n : ℕ}
+    (h : Fin (n + 1)) (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
+    (hdet : B.det ≠ 0) (hB0 : B h 0 ≠ 0)
+    (hh : |B h 0| = ‖fun i => B i 0‖)
+    (hshort : ∀ x ∈ Submodule.span ℤ (Set.range (matrixBasisF B hdet)),
+      x ≠ 0 → ‖fun i => B i 0‖ ≤ ‖x‖)
+    {z : Fin n → ℤ} (hz : z ≠ 0) :
+    ‖reducedTailLiftF h B z‖ ≤
+      2 * ‖Matrix.mulVec (projectedTailF h B) (intCastVecF z)‖ := by
+  let t := ‖Matrix.mulVec (projectedTailF h B) (intCastVecF z)‖
+  have hupp : ‖reducedTailLiftF h B z‖ ≤
+      t + ‖fun i => B i 0‖ / 2 :=
+    norm_reducedTailLiftF_le h B hh hB0 z (t := t) le_rfl
+  have hmem := reducedTailLiftF_mem_span h B hdet z
+  have hne := reducedTailLiftF_ne_zero h B hdet hB0 hz
+  have hlow := hshort (reducedTailLiftF h B z) hmem hne
+  have ht : 0 ≤ t := norm_nonneg _
+  dsimp [t] at hupp ⊢
+  nlinarith
 
 end
 
