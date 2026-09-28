@@ -6,57 +6,37 @@ namespace Jsp000216
 noncomputable section
 
 /-- Existentially package the explicit GAP-cover constants while they are still
-variables.  Keeping this wrapper generic is important: after specialization to
-Erdős #245 the coarse explicit exponent is astronomically large, but its value
-is irrelevant to the infinite argument. -/
+variables.  The infinite argument needs only existence of uniform constants. -/
 theorem exists_uniformGAPCoverF_of_denseCore {K R D : ℕ}
     (hK : 1 ≤ K) (hcore : DenseGAPCoreF K R D) :
     ∃ R' C' : ℕ, UniformGAPCoverF K R' C' := by
   exact ⟨R + K ^ 5 * D, 2 ^ (R + K ^ 5 * D) * K ^ 4,
     uniformGAPCoverF_of_denseCore hK hcore⟩
 
-/-- Cyclic density parameter required by the Ruzsa-model reduction at
-integer doubling constant `12`. -/
-def erdos245CyclicDensityQF : ℕ := 32 * 12 ^ 16
-
-/-- Rank of the proper dense integer GAP core obtained from the cyclic Bohr
-progression. -/
-def erdos245DenseRankF : ℕ := bohrCoreRankF erdos245CyclicDensityQF
-
-/-- Cardinality factor of the proper dense integer GAP core. -/
-def erdos245DenseFactorF : ℕ := 16 * bohrCoreCardFactorF erdos245CyclicDensityQF
+/-- Combine the cyclic-model reduction with the existential GAP-cover wrapper
+before any large constants are specialized. -/
+theorem exists_uniformGAPCoverF_of_cyclicDenseCore {K R D : ℕ}
+    (hK : 1 ≤ K)
+    (hcyc : UniformCyclicDenseCoreF (32 * K ^ 16) R D) :
+    ∃ R' C' : ℕ, UniformGAPCoverF K R' C' := by
+  exact exists_uniformGAPCoverF_of_denseCore hK
+    (denseGAPCoreF_of_cyclicDenseCore hK hcyc)
 
 /-- The structural input previously isolated as an assumption is now
 unconditional: there exist fixed rank and box-cardinality constants such that
 every finite integer set of doubling at most `12` is contained in a GAP with
-those uniform bounds. -/
+those uniform bounds.
+
+The explicit Bohr constants remain hidden behind generic existential theorems,
+so specializing to the large Ruzsa-model density parameter never asks the
+kernel to evaluate an astronomically large natural-number power. -/
 theorem erdos245_exists_uniformGAPCoverF :
     ∃ R C : ℕ, UniformGAPCoverF 12 R C := by
-  have hqpos : 0 < erdos245CyclicDensityQF := by
-    dsimp [erdos245CyclicDensityQF]
-    positivity
-  have hq : 1 ≤ erdos245CyclicDensityQF := Nat.one_le_iff_ne_zero.mpr hqpos.ne'
-  have hcyc :
-      UniformCyclicDenseCoreF erdos245CyclicDensityQF
-        (bohrCoreRankF erdos245CyclicDensityQF)
-        (bohrCoreCardFactorF erdos245CyclicDensityQF) :=
-    uniformCyclicDenseCoreF_from_bohr erdos245CyclicDensityQF hq
-  have hcyc' :
-      UniformCyclicDenseCoreF (32 * 12 ^ 16)
-        (bohrCoreRankF erdos245CyclicDensityQF)
-        (bohrCoreCardFactorF erdos245CyclicDensityQF) := by
-    rw [← show erdos245CyclicDensityQF = 32 * 12 ^ 16 by rfl]
-    exact hcyc
-  have hcore0 :=
-    denseGAPCoreF_of_cyclicDenseCore
-      (K := 12)
-      (R := bohrCoreRankF erdos245CyclicDensityQF)
-      (D := bohrCoreCardFactorF erdos245CyclicDensityQF)
-      (by omega)
-      hcyc'
-  have hcore : DenseGAPCoreF 12 erdos245DenseRankF erdos245DenseFactorF := by
-    exact hcore0
-  exact exists_uniformGAPCoverF_of_denseCore (by omega) hcore
+  have hq : 1 ≤ 32 * 12 ^ 16 := by positivity
+  obtain ⟨R, D, hcyc⟩ :=
+    exists_uniformCyclicDenseCoreF_from_bohr (32 * 12 ^ 16) hq
+  exact exists_uniformGAPCoverF_of_cyclicDenseCore
+    (K := 12) (R := R) (D := D) (by omega) hcyc
 
 end
 
