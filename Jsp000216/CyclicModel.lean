@@ -196,6 +196,7 @@ lemma ruzsaRepresentativeSum_bounds {q s c : ℕ} [NeZero q]
   have hTne : T ≠ 0 := by
     intro hT
     simp [hT] at hcard
+    omega
   have hhi : ruzsaRepresentativeSum q lam T < T.card • ((c + 1) * L) := by
     have hhi' := Multiset.sum_lt_sum_of_nonempty hTne fun x hxT =>
       (ruzsaRepresentative_bounds_of_color_eq lam (hcolor x hxT)).2
