@@ -18,8 +18,9 @@ theorem erdos245_no_eventual_scaled_below_threeF
       m * countInF (S + S) N + countInF S N <
         3 * m * countInF S N) := by
   intro hscaled
+  obtain ⟨R, C, hcover⟩ := erdos245_exists_uniformGAPCoverF
   exact contradiction_of_scaled_three_of_cover
-    hS hpos hden hm erdos245_uniformGAPCoverF hscaled
+    hS hpos hden hm hcover hscaled
 
 /-- Equivalently, for every positive integer `m`, arbitrarily late cutoffs
 satisfy the lower ratio bound `3 - 1/m` after clearing denominators. -/
