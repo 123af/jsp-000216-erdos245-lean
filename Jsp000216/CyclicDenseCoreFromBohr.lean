@@ -10,12 +10,13 @@ noncomputable section
 /-- Rank budget coming from the large-spectrum cardinality bound. -/
 def bohrCoreRankF (q : ℕ) : ℕ := 16 * q ^ 3 + 1
 
-/-- A deliberately coarse fixed cardinality factor.  It is a finite sum of
-all dimension constants that can occur below the rank budget, so the actual
-constant is literally one nonnegative summand. -/
+/-- A coarse closed-form cardinality factor.  Keeping this as a closed term,
+rather than a finite sum over every possible rank, is important when the
+fixed density parameter is later specialized to the large Erdős-245 model
+constant. -/
 def bohrCoreCardFactorF (q : ℕ) : ℕ :=
-  (Finset.range (bohrCoreRankF q + 1)).sum fun m =>
-    (16 * m) ^ m * 2 ^ (m * (m - 1) / 2)
+  (16 * bohrCoreRankF q) ^ bohrCoreRankF q *
+    2 ^ (bohrCoreRankF q * bohrCoreRankF q)
 
 /-- The Fourier large-spectrum bound plus the box-Minkowski Bohr progression
 close the uniform cyclic dense-core input with explicit, if very coarse,
@@ -41,16 +42,33 @@ theorem uniformCyclicDenseCoreF_from_bohr (q : ℕ) (hq : 1 ≤ q) :
     rw [hQrank]
     exact hmM
   let m := Gamma.card + 1
-  have hmmem : m ∈ Finset.range (bohrCoreRankF q + 1) := by
-    rw [Finset.mem_range]
-    exact Nat.lt_succ_of_le (by simpa [m] using hmM)
+  have hmM' : m ≤ bohrCoreRankF q := by
+    simpa [m] using hmM
+  have hMpos : 0 < bohrCoreRankF q := by
+    dsimp [bohrCoreRankF]
+    omega
+  have hfirst :
+      (16 * m) ^ m ≤
+        (16 * bohrCoreRankF q) ^ bohrCoreRankF q := by
+    calc
+      (16 * m) ^ m ≤ (16 * bohrCoreRankF q) ^ m :=
+        Nat.pow_le_pow_left (Nat.mul_le_mul_left 16 hmM') m
+      _ ≤ (16 * bohrCoreRankF q) ^ bohrCoreRankF q :=
+        Nat.pow_le_pow_right (Nat.mul_pos (by omega) hMpos) hmM'
+  have hexp :
+      m * (m - 1) / 2 ≤ bohrCoreRankF q * bohrCoreRankF q := by
+    calc
+      m * (m - 1) / 2 ≤ m * (m - 1) := Nat.div_le_self _ _
+      _ ≤ m * m := Nat.mul_le_mul_left m (Nat.sub_le m 1)
+      _ ≤ bohrCoreRankF q * bohrCoreRankF q := Nat.mul_le_mul hmM' hmM'
+  have hsecond :
+      2 ^ (m * (m - 1) / 2) ≤
+        2 ^ (bohrCoreRankF q * bohrCoreRankF q) :=
+    Nat.pow_le_pow_right (by omega) hexp
   have hterm :
       (16 * m) ^ m * 2 ^ (m * (m - 1) / 2) ≤ bohrCoreCardFactorF q := by
     dsimp [bohrCoreCardFactorF]
-    exact Finset.single_le_sum
-      (s := Finset.range (bohrCoreRankF q + 1))
-      (f := fun i : ℕ => (16 * i) ^ i * 2 ^ (i * (i - 1) / 2))
-      (fun i hi => Nat.zero_le _) hmmem
+    exact Nat.mul_le_mul hfirst hsecond
   have hKleD :
       (16 * (m : ℝ)) ^ m * minkowskiBoxConstantF m ≤
         (bohrCoreCardFactorF q : ℝ) := by
