@@ -36,5 +36,6 @@ import Jsp000216.CramerBound
 import Jsp000216.ReducedChain
 import Jsp000216.GAPChain
 import Jsp000216.GAPCoverInterface
+import Jsp000216.GAPCoverReduction
 import Jsp000216.ConditionalGap
 import Jsp000216.CoreAssembly
