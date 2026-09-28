@@ -11,9 +11,9 @@ noncomputable section
 independent lattice vectors whose sup-norm product is controlled by the
 box-Minkowski dimension constant times the lattice determinant. -/
 theorem exists_minkowskiBox_familyF :
-    ∀ n (D : Matrix (Fin n) (Fin n) ℝ), D.det ≠ 0 →
+    ∀ n (D : Matrix (Fin n) (Fin n) ℝ) (hD : D.det ≠ 0),
       ∃ v : Fin n → (Fin n → ℝ),
-        (∀ i, v i ∈ Submodule.span ℤ (Set.range (matrixBasisF D (by assumption)))) ∧
+        (∀ i, v i ∈ Submodule.span ℤ (Set.range (matrixBasisF D hD))) ∧
         LinearIndependent ℝ v ∧
         (∏ i, ‖v i‖) ≤ minkowskiBoxConstantF n * |D.det| := by
   intro n
@@ -51,8 +51,9 @@ theorem exists_minkowskiBox_familyF :
       have hz0 : ∀ j, z j ≠ 0 := by
         intro j hzj
         apply hwli.ne_zero j
-        rw [← hz j, hzj]
-        simp [intCastVecF, Matrix.mulVec]
+        rw [← hz j]
+        funext i
+        simp [hzj, intCastVecF, Matrix.mulVec]
       let v : Fin (n + 1) → (Fin (n + 1) → ℝ) :=
         Fin.cons (fun i => B i 0) (fun j => reducedTailLiftF h B (z j))
       have hvmem : ∀ i, v i ∈
