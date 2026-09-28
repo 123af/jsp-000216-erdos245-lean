@@ -1,4 +1,5 @@
 import Jsp000216.BohrLattice
+import Jsp000216.CyclicGAP
 
 open scoped BigOperators Pointwise
 
