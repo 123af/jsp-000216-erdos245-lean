@@ -18,14 +18,13 @@ theorem exists_proper_bohr_progressionF {N : ℕ} [NeZero N]
   have hNr : (0 : ℝ) < N := by
     exact_mod_cast (Nat.zero_lt_one.trans hN)
   have hR : (0 : ℝ) < (N : ℝ) / 4 := by positivity
-  let C := bohrLatticeCertificateF_of_minkowski Gamma hN ((N : ℝ) / 4) hR
+  obtain ⟨C⟩ :=
+    nonempty_bohrLatticeCertificateF_of_minkowski Gamma hN ((N : ℝ) / 4) hR
   refine ⟨C.progression, ?_, ?_, ?_⟩
   · exact C.progression_rank
   · apply C.progression_proper hN hR
-    dsimp [C]
     nlinarith
   · apply C.progression_carrier_subset_bohr hN hR
-    dsimp [C]
     nlinarith
 
 /-- At scale `N/4`, the denominator in the raw progression lower bound has
@@ -60,17 +59,14 @@ theorem exists_proper_bohr_progression_raw_boundF {N : ℕ} [NeZero N]
   have hNr : (0 : ℝ) < N := by
     exact_mod_cast (Nat.zero_lt_one.trans hN)
   have hR : (0 : ℝ) < (N : ℝ) / 4 := by positivity
-  let C := bohrLatticeCertificateF_of_minkowski Gamma hN ((N : ℝ) / 4) hR
+  obtain ⟨C⟩ :=
+    nonempty_bohrLatticeCertificateF_of_minkowski Gamma hN ((N : ℝ) / 4) hR
   refine ⟨C.progression, C.progression_rank, ?_, ?_, ?_⟩
   · apply C.progression_proper hN hR
-    dsimp [C]
     nlinarith
   · apply C.progression_carrier_subset_bohr hN hR
-    dsimp [C]
     nlinarith
-  · simpa [C] using C.progression_carrier_card_lower_bound hN hR (by
-      dsimp [C]
-      nlinarith)
+  · simpa using C.progression_carrier_card_lower_bound hN hR (by nlinarith)
 
 end
 
