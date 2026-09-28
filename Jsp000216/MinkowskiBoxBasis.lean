@@ -249,8 +249,7 @@ lemma abs_det_latticeBasisMatrixF {n : ℕ}
   have hmat : Matrix.of (fun j i => (b0 j : Fin n → ℝ) i) = D.transpose := by
     ext i j
     dsimp [b0]
-    change (matrixBasisF D hD i) j = D j i
-    rw [matrixBasisF_apply]
+    rw [Basis.restrictScalars_apply, matrixBasisF_apply]
   calc
     |(latticeBasisMatrixF D hD b).det| =
         |(Matrix.of (fun j i => (b j : Fin n → ℝ) i)).det| := by
