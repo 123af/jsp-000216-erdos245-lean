@@ -65,6 +65,98 @@ lemma mem_span_matrixBasisF_iff_exists_intCastVecF {n : ℕ}
   · rintro ⟨z, rfl⟩
     exact matrix_mulVec_intCastVecF_mem_span D hD z
 
+/-- Put a shortest nonzero lattice point in the first column of an integral
+basis matrix, while preserving determinant and remembering a coordinate where
+that first column attains its sup norm. -/
+theorem exists_shortest_first_column_basisF {n : ℕ}
+    (D : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) (hD : D.det ≠ 0) :
+    ∃ (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) (h : Fin (n + 1)),
+      B.det ≠ 0 ∧
+      |B.det| = |D.det| ∧
+      (fun i => B i 0) ∈
+        Submodule.span ℤ (Set.range (matrixBasisF D hD)) ∧
+      (fun i => B i 0) ≠ 0 ∧
+      (∀ x ∈ Submodule.span ℤ (Set.range (matrixBasisF D hD)),
+        x ≠ 0 → ‖fun i => B i 0‖ ≤ ‖x‖) ∧
+      |B h 0| = ‖fun i => B i 0‖ ∧
+      B h 0 ≠ 0 ∧
+      Submodule.span ℤ (Set.range (matrixBasisF B (by assumption))) ≤
+        Submodule.span ℤ (Set.range (matrixBasisF D hD)) := by
+  let bD := matrixBasisF D hD
+  let L := Submodule.span ℤ (Set.range bD)
+  obtain ⟨v, hvL, hv0, hvmin⟩ := exists_shortest_zspan_pointF bD
+  let vL : L := ⟨v, hvL⟩
+  have hvL0 : vL ≠ 0 := by
+    intro hz
+    apply hv0
+    have hz' := congrArg Subtype.val hz
+    simpa [vL] using hz'
+  let mu : L → ℝ := fun x => ‖(x : Fin (n + 1) → ℝ)‖
+  have hmupos : ∀ x ≠ 0, 0 < mu x := by
+    intro x hx
+    apply norm_pos_iff.mpr
+    intro hcoe
+    apply hx
+    apply Subtype.ext
+    simpa using hcoe
+  have hmuhom : ∀ (c : ℤ), 0 < c → ∀ x, mu (c • x) = (c : ℝ) * mu x := by
+    intro c hc x
+    dsimp [mu]
+    change ‖c • (x : Fin (n + 1) → ℝ)‖ =
+      (c : ℝ) * ‖(x : Fin (n + 1) → ℝ)‖
+    rw [← Int.cast_smul_eq_zsmul ℝ c, norm_smul, Real.norm_eq_abs]
+    rw [abs_of_pos (by exact_mod_cast hc : (0 : ℝ) < c)]
+  have hmumin : ∀ x ≠ 0, mu vL ≤ mu x := by
+    intro x hx
+    dsimp [mu, vL]
+    apply hvmin (x : Fin (n + 1) → ℝ) x.property
+    intro hcoe
+    apply hx
+    apply Subtype.ext
+    simpa using hcoe
+  obtain ⟨b, hb0⟩ := shortest_zspan_vector_extendsF
+    (Nat.succ_pos n) bD vL hvL0 mu hmupos hmuhom hmumin
+  let B := latticeBasisMatrixF D hD b
+  have hBdet : B.det ≠ 0 := by
+    dsimp [B]
+    exact latticeBasisMatrixF_det_ne_zero D hD b
+  have habs : |B.det| = |D.det| := by
+    dsimp [B]
+    exact abs_det_latticeBasisMatrixF D hD b
+  have hcol : (fun i => B i 0) = v := by
+    funext i
+    dsimp [B]
+    rw [latticeBasisMatrixF_apply]
+    have hb0' : b (0 : Fin (n + 1)) = vL := by simpa using hb0
+    rw [hb0']
+    rfl
+  have hcolmem : (fun i => B i 0) ∈
+      Submodule.span ℤ (Set.range (matrixBasisF D hD)) := by
+    rw [hcol]
+    exact hvL
+  have hcol0 : (fun i => B i 0) ≠ 0 := by
+    rw [hcol]
+    exact hv0
+  have hshort : ∀ x ∈ Submodule.span ℤ (Set.range (matrixBasisF D hD)),
+      x ≠ 0 → ‖fun i => B i 0‖ ≤ ‖x‖ := by
+    intro x hx hx0
+    rw [hcol]
+    exact hvmin x hx hx0
+  obtain ⟨h, hh0⟩ := (IsGreatest.pi_norm (fun i => B i 0)).1
+  have hh : |B h 0| = ‖fun i => B i 0‖ := by
+    simpa [Real.norm_eq_abs] using hh0
+  have hB0 : B h 0 ≠ 0 := by
+    intro hz
+    apply hcol0
+    apply norm_eq_zero.mp
+    rw [← hh, hz, abs_zero]
+  have hspan :
+      Submodule.span ℤ (Set.range (matrixBasisF B hBdet)) ≤
+        Submodule.span ℤ (Set.range (matrixBasisF D hD)) := by
+    dsimp [B, hBdet]
+    exact span_matrixBasis_latticeBasisMatrixF_le D hD b
+  exact ⟨B, h, hBdet, habs, hcolmem, hcol0, hshort, hh, hB0, hspan⟩
+
 end
 
 end Jsp000216
