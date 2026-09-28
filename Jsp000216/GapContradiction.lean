@@ -40,8 +40,13 @@ lemma contradiction_of_arbitrarily_late_doubling_gaps
     | zero =>
         simpa using hpos (enumerateF_mem hS 0)
     | succ j ih =>
-        have hstep := enumerateF_strictMono hS (Nat.lt_succ_self j)
-        omega
+        have hstep : enumerateF S j < enumerateF S (j + 1) :=
+          enumerateF_strictMono hS (Nat.lt_succ_self j)
+        have hstep' : enumerateF S j + 1 ≤ enumerateF S (j + 1) :=
+          Nat.succ_le_of_lt hstep
+        have hind : j + 2 ≤ enumerateF S j + 1 :=
+          Nat.add_le_add_right ih 1
+        simpa [Nat.succ_eq_add_one, Nat.add_assoc] using hind.trans hstep'
   have hEiLd : Ld ≤ enumerateF S i := by
     have hei := henum_ge i
     dsimp [s] at his
