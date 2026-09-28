@@ -45,5 +45,6 @@ import Jsp000216.CyclicCoreReduction
 import Jsp000216.CyclicFourier
 import Jsp000216.CyclicBogolyubov
 import Jsp000216.CyclicBohr
+import Jsp000216.BohrLattice
 import Jsp000216.ConditionalGap
 import Jsp000216.CoreAssembly
