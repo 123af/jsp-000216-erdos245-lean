@@ -6,7 +6,7 @@ namespace Jsp000216
 
 /-- Cast a finite set of naturals into the integers. -/
 def natToIntFinsetF (A : Finset ℕ) : Finset ℤ :=
-  A.image fun n => (n : ℤ)
+  A.image fun n : ℕ => (n : ℤ)
 
 @[simp] lemma mem_natToIntFinsetF {A : Finset ℕ} {z : ℤ} :
     z ∈ natToIntFinsetF A ↔ ∃ n ∈ A, (n : ℤ) = z := by
