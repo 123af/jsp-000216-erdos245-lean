@@ -10,6 +10,11 @@ noncomputable section
 /-- Cast an integral coordinate vector to real coordinates. -/
 def intCastVecF {n : ℕ} (z : Fin n → ℤ) : Fin n → ℝ := fun i => (z i : ℝ)
 
+@[simp] lemma intCastVecF_cons {n : ℕ} (a : ℤ) (z : Fin n → ℤ) :
+    intCastVecF (Fin.cons a z) = Fin.cons (a : ℝ) (intCastVecF z) := by
+  funext i
+  refine Fin.cases ?_ (fun j => ?_) i <;> simp [intCastVecF]
+
 /-- A nonsingular matrix packages its columns as a real basis. -/
 noncomputable def matrixBasisF {n : ℕ} (D : Matrix (Fin n) (Fin n) ℝ)
     (hD : D.det ≠ 0) : Basis (Fin n) ℝ (Fin n → ℝ) :=
@@ -78,6 +83,15 @@ lemma matrix_mulVec_intCastVecF_mem_span {n : ℕ}
   refine ⟨z, ?_⟩
   ext i
   simp [Matrix.mulVec, dotProduct, intCastVecF, mul_comm]
+
+/-- A raw tail lift is an honest point of the original integer lattice. -/
+lemma rawTailLiftF_mem_span {n : ℕ}
+    (B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) (hB : B.det ≠ 0)
+    (z : Fin n → ℤ) :
+    rawTailLiftF B z ∈
+      Submodule.span ℤ (Set.range (matrixBasisF B hB)) := by
+  simpa [rawTailLiftF] using
+    (matrix_mulVec_intCastVecF_mem_span B hB (Fin.cons 0 z))
 
 end
 
