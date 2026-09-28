@@ -14,7 +14,7 @@ def bohrCoreRankF (q : ℕ) : ℕ := 16 * q ^ 3 + 1
 all dimension constants that can occur below the rank budget, so the actual
 constant is literally one nonnegative summand. -/
 def bohrCoreCardFactorF (q : ℕ) : ℕ :=
-  ∑ m in Finset.range (bohrCoreRankF q + 1),
+  (Finset.range (bohrCoreRankF q + 1)).sum fun m =>
     (16 * m) ^ m * 2 ^ (m * (m - 1) / 2)
 
 /-- The Fourier large-spectrum bound plus the box-Minkowski Bohr progression
@@ -60,7 +60,8 @@ theorem uniformCyclicDenseCoreF_from_bohr (q : ℕ) (hq : 1 ≤ q) :
           ((16 * (Gamma.card + 1) : ℝ) ^ (Gamma.card + 1) *
             minkowskiBoxConstantF (Gamma.card + 1)) * (Q.carrier.card : ℝ) := hNbound
       _ = ((16 * (m : ℝ)) ^ m * minkowskiBoxConstantF m) *
-            (Q.carrier.card : ℝ) := by rfl
+            (Q.carrier.card : ℝ) := by
+        simp [m, Nat.cast_add, Nat.cast_one]
       _ ≤ (bohrCoreCardFactorF q : ℝ) * (Q.carrier.card : ℝ) := by
         exact mul_le_mul_of_nonneg_right hKleD (by positivity)
   have hNboundNat : N ≤ bohrCoreCardFactorF q * Q.carrier.card := by
