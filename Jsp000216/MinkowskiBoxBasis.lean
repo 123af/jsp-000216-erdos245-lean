@@ -170,7 +170,9 @@ lemma reducedTailLiftF_ne_zero {n : ℕ}
   intro hzero
   have hproj0 : Matrix.mulVec (projectedTailF h B) (intCastVecF z) = 0 := by
     rw [← deleteProjectionF_reducedTailLiftF h B hB0 z, hzero]
-    simp [deleteProjectionF]
+    funext i
+    change (0 : ℝ) - ((0 : ℝ) / B h 0) * B (h.succAbove i) 0 = 0
+    ring
   exact (matrix_mulVec_intCastVecF_ne_zero
     (projectedTailF h B) (projectedTailF_det_ne_zero h B hdet hB0) hz) hproj0
 
